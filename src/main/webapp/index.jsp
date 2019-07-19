@@ -11,7 +11,8 @@
     <title>Title</title>
 </head>
 <body>
-    Hello World!
+    <h2>Hello World!</h2>
     <a href="servlet">Click here to see servlet</a>
+    <a href="home">Click here to Home</a>
 </body>
 </html>

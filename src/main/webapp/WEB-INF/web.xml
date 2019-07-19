@@ -25,20 +25,56 @@
 
   <display-name>Archetype Created Web Application</display-name>
 
+  <filter>
+    <filter-name>Encoding</filter-name>
+    <filter-class>org.manager.filters.Encoding</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>Encoding</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
   <servlet>
     <servlet-name>HelloServlet</servlet-name>
     <servlet-class>org.servlet.Servlet</servlet-class>
   </servlet>
-
   <servlet-mapping>
     <servlet-name>HelloServlet</servlet-name>
     <url-pattern>/servlet</url-pattern>
   </servlet-mapping>
 
-<!--  <welcome-file-list>-->
-<!--    <welcome-file>index.jsp</welcome-file>-->
-<!--  </welcome-file-list>-->
-
+  <servlet>
+    <servlet-name>HomeJSP</servlet-name>
+    <jsp-file>/WEB-INF/jsp/home.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>HomeJSP</servlet-name>
+    <url-pattern>/home</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>NatPersonLogin</servlet-name>
+    <jsp-file>/WEB-INF/jsp/payer/nperson_login_form.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>NatPersonLogin</servlet-name>
+    <url-pattern>/person-login</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>JurPersonLogin</servlet-name>
+    <url-pattern>/juridical-person-login</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>JurPersonLogin</servlet-name>
+    <jsp-file>/WEB-INF/jsp/payer/jperson_login_form.jsp</jsp-file>
+  </servlet>
+  <servlet>
+    <servlet-name>OfficerLogin</servlet-name>
+    <jsp-file>/WEB-INF/jsp/officer/officer_login_form.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>OfficerLogin</servlet-name>
+    <url-pattern>/officer-login</url-pattern>
+  </servlet-mapping>
 
 </web-app>
         
