@@ -2,8 +2,7 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="en">
-<html xmlns:th="http://www.thymeleaf.org">
-<fmt:setLocale value="uk" />
+<fmt:setLocale value="${sessionScope.language}" />
 <fmt:setBundle basename="i18n/messages"/>
 <head>
     <meta charset="UTF-8">
@@ -34,28 +33,28 @@
         <td>
         </td>
         <td class="rightcol">
-            <a th:href="@{/?lang=en}">English</a>
+            <a href="${pageContext.request.requestURL.toString()}?lang=en">English</a>
             &nbsp;|&nbsp;
-            <a th:href="@{/?lang=uk}">Ukrainian</a>
+            <a href="${pageContext.request.requestURL.toString()}?lang=uk">Ukrainian</a>
         </td>
     </tr>
 </table>
 <div class="col-md-8 col-md-offset-2">
     <h1 style="margin-right:0px" th:text="#{task.name}"> <fmt:message key="task.name"/></h1>
 </div>
-<form action="/tax_system/juridical-person-login">
+<form action="${pageContext.request.contextPath}/juridical-person-login">
     <button class="btn btn-success" style="margin-top:30px; margin-left:40px" th:text="#{to.jpersonlogin.button.lable}">
         <fmt:message key="to.jpersonlogin.button.lable"/>
 <%--        Juridical person login--%>
     </button>
 </form>
-<form action="/tax_system/person-login">
+<form action="${pageContext.request.contextPath}/person-login">
     <button class="btn btn-success" style="margin-top:30px; margin-left:40px" th:text="#{to.npersonlogin.button.lable}">
         <fmt:message key="to.npersonlogin.button.lable"/>
 <%--        Natural person login--%>
     </button>
 </form>
-<form action="/tax_system/officer-login">
+<form action="${pageContext.request.contextPath}/officer-login">
     <button class="btn btn-success" style="margin-top:30px; margin-left:40px" th:text="#{to.officerlogin.button.lable}">
         <fmt:message key="to.officerlogin.button.lable"/>
 <%--        Tax officer login--%>

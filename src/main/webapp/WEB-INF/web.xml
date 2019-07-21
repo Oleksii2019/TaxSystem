@@ -33,14 +33,30 @@
     <filter-name>Encoding</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+  <filter>
+    <filter-name>Internalization</filter-name>
+    <filter-class>org.manager.filters.Internalization</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>Internalization</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <filter>
+    <filter-name>Authorization</filter-name>
+    <filter-class>org.manager.filters.Authorization</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>Authorization</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
 
   <servlet>
-    <servlet-name>HelloServlet</servlet-name>
+    <servlet-name>Servlet</servlet-name>
     <servlet-class>org.servlet.Servlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>HelloServlet</servlet-name>
-    <url-pattern>/servlet</url-pattern>
+    <servlet-name>Servlet</servlet-name>
+    <url-pattern>/</url-pattern>
   </servlet-mapping>
 
   <servlet>
@@ -59,14 +75,14 @@
     <servlet-name>NatPersonLogin</servlet-name>
     <url-pattern>/person-login</url-pattern>
   </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>JurPersonLogin</servlet-name>
-    <url-pattern>/juridical-person-login</url-pattern>
-  </servlet-mapping>
   <servlet>
     <servlet-name>JurPersonLogin</servlet-name>
     <jsp-file>/WEB-INF/jsp/payer/jperson_login_form.jsp</jsp-file>
   </servlet>
+  <servlet-mapping>
+    <servlet-name>JurPersonLogin</servlet-name>
+    <url-pattern>/juridical-person-login</url-pattern>
+  </servlet-mapping>
   <servlet>
     <servlet-name>OfficerLogin</servlet-name>
     <jsp-file>/WEB-INF/jsp/officer/officer_login_form.jsp</jsp-file>
@@ -74,6 +90,32 @@
   <servlet-mapping>
     <servlet-name>OfficerLogin</servlet-name>
     <url-pattern>/officer-login</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>PayerRegForm</servlet-name>
+    <jsp-file>/WEB-INF/jsp/payer/reg_form.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>PayerRegForm</servlet-name>
+    <url-pattern>/payer-registration</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>PayerReports</servlet-name>
+    <jsp-file>/WEB-INF/jsp/payer/payer_report_list_form.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>PayerReports</servlet-name>
+    <url-pattern>/payer-reports</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>OfficerReports</servlet-name>
+    <jsp-file>/WEB-INF/jsp/officer/officer_report_list_form.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>OfficerReports</servlet-name>
+    <url-pattern>/officer-reports</url-pattern>
   </servlet-mapping>
 
 </web-app>

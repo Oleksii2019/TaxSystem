@@ -1,90 +1,101 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
-<html xmlns:th="http://www.thymeleaf.org">
+<fmt:setLocale value="${sessionScope.language}" />
+<fmt:setBundle basename="i18n/messages"/>
 <head>
     <meta charset="UTF-8">
-    <title>Login form's Main</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <script src="http://code.jquery.com/jquery-3.4.1.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
     <style>
         table.text  {
             height: 35px;
-            width:  100%; /* Ширина таблицы */
-            border-spacing: 0; /* Расстояние между ячейками */
+            width:  100%;
+            border-spacing: 0;
             background:#ccc;
             padding:5px;
-            margin:5px 0px
+            margin:5px 0px;
         }
         table.text td {
-            width: 50%; /* Ширина ячеек */
-            vertical-align: middle; /* Выравнивание по верхнему краю */
+            width: 50%;
+            vertical-align: middle;
         }
-        td.rightcol { /* Правая ячейка */
-            text-align: right; /* Выравнивание по правому краю */
+        td.rightcol {
+            text-align: right;
         }
     </style>
 </head>
-<body ng-app="login_form" ng-controller="AppCtrl">
+<body>
 <table class="text">
     <tr>
         <td>
-            <a href="/tax_system" th:text="#{home.menu}">Home</a>
+            <a href="home"><fmt:message key="home.menu"/></a>
             &nbsp;|&nbsp;
-            <a href="/reg_form" th:text="#{reg.menu}">Registration</a>
+            <a href="payer-registration"><fmt:message key="reg.menu"/></a>
         </td>
         <td class="rightcol">
-            <a th:href="@{/login_natural_person?lang=en}">English</a>
+            <a href="${pageContext.request.requestURL.toString()}?lang=en">English</a>
             &nbsp;|&nbsp;
-            <a th:href="@{/login_natural_person?lang=uk}">Ukrainian</a>
+            <a href="${pageContext.request.requestURL.toString()}?lang=uk">Ukrainian</a>
         </td>
     </tr>
 </table>
 <div class="col-md-8 col-md-offset-2">
-    <h1 th:text="#{nperson.login.form}">Login form's Main</h1>
+    <h1><fmt:message key="nperson.login.form"/></h1>
 </div>
 <div class="container" style="margin-top: 60px">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <h3 id="resultMessage">{{message}}</h3>
-            <h1 class="page-header" th:text="#{login.title}">Login</h1>
-            <form style="margin-bottom: 30px" name="form" autocomplete="off" novalidate ng-submit="form.$valid && sendForm(auth)">
+            <c:if test="${inputMistake ne null}">
+                <h3 id="message-title" style="color:#ff0000"><fmt:message key="message.login.error"/></h3>
+            </c:if>
+<%--            <h3 id="message-title"><c:out value="${sessionScope.err}" default="DDDDD"/></h3>        ${pageContext.request.contextPath}            --%>
+            <h1 class="page-header"><fmt:message key="login.title"/></h1>
+            <form style="margin-bottom: 30px" id="main-form" method="get" action=" ${pageContext.request.requestURL.toString()}/login" autocomplete="off" novalidate>
                 <div class="form-group">
-                    <label id="exampleInputLoginLabel" for="exampleInputLogin1" th:text="#{login.lable}">Login</label>
-                    <input type="login"
-                           class="form-control"
-                           id="exampleInputLogin1"
-                           placeholder="Login"
-                           required
-                           ng-model="auth.login" th:attr="placeholder=#{login.lable}">
+                    <label  class="control-label" for="exampleInputLogin"><fmt:message key="login.lable"/></label>
+                        <input type = "text"
+                               name = "login"
+                               class="form-control"
+                               id="exampleInputLogin"
+                               placeholder=<fmt:message key="login.lable"/>
+                               required>
                 </div>
                 <div class="form-group">
-                    <label id="exampleInputPasswordLabel" class="control-label" for="exampleInputPassword1" th:text="#{password.lable}">Password</label>
-                    <input type="password"
+                    <label class="control-label" for="exampleInputPassword1"><fmt:message key="password.lable"/></label>
+                    <input type = "password"
+                           name="password"
                            class="form-control"
                            id="exampleInputPassword1"
-                           placeholder="Password"
-                           required
-                           ng-model="auth.password" th:attr="placeholder=#{password.lable}">
+                           placeholder=<fmt:message key="password.lable"/>
+                           required>
+                    <button type="submit" id="sbmBtn" class="btn btn-success" style="margin-top:30px" disabled="disabled" ${ condition ? 'disabled="disabled"' : ''}>
+                        <fmt:message key="login.submit.lable"/>
+                    </button>
                 </div>
-                <button type="submit" class="btn btn-success" style="margin-top:30px" ng-disabled="form.$invalid" th:text="#{login.submit.lable}">
-                    Submit
-                </button>
-            </form>
-            <form action="/payer_report_list">
-                <button id="goBtn" class="btn btn-success" style="margin-top:30px" th:text="#{forward.button.lable}">
-                    Next
-                </button>
             </form>
         </div>
     </div>
 </div>
 <div>
     <h1 hidden id="messageLoginOK" th:text="#{message.login.ok}">Ok</h1>
-    <h1 hidden id="messageLoginErr" th:text="#{message.login.error}">Error</h1>
 </div>
-<script type="text/javascript" src="/js/np_log_form.js"></script>
+<script type="text/javascript">
+    var select = document.getElementById("main-form");
+
+    (function() {
+        var button = document.getElementById("sbmBtn");
+        var mess = document.getElementById("message-title");
+        select.addEventListener("change", function(e) {
+            button.disabled = false;
+            mess.hidden = true;
+
+        });
+    })();
+
+</script>
 </body>
 </html>
