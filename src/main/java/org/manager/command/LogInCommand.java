@@ -1,6 +1,7 @@
 package org.manager.command;
 
 import org.model.UserRole;
+import org.model.dao.DaoFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -17,7 +18,8 @@ public class LogInCommand implements Command {
 
         if ((name == null) || name.isEmpty()
                 || (password == null) || password.isEmpty()
-                || !request.getSession().getAttribute(USER_NAME_PARAMETER).equals("Guest")
+                || !request.getSession().getAttribute(USER_NAME_PARAMETER)
+                   .equals(GUEST_USER_NAME)
                 || CommandUtility.IsUserLogged(request, name)) {
             return getURIForRequestPage(request);
         }
@@ -26,12 +28,15 @@ public class LogInCommand implements Command {
 
         if (name.equals("Admin")){
             CommandUtility.addToLoggedUsers(request, name);
-            CommandUtility.setUserAndRole(request, UserRole.OFFICER.toString(), name);
+            CommandUtility.setUserAndRole(request,
+                    UserRole.OFFICER.toString(), name);
             removeInputMistakeSign(request);
             return "/tax_system/officer-reports";
-        } else if(name.equals("User")) {
+        } else if(DaoFactory.getInstance().createPayerDao()
+                .matchForLoginAndPassword(name, password)) {
             CommandUtility.addToLoggedUsers(request, name);
-            CommandUtility.setUserAndRole(request, UserRole.PAYER.toString(), name);
+            CommandUtility.setUserAndRole(request,
+                    UserRole.PAYER.toString(), name);
             removeInputMistakeSign(request);
             return "/tax_system/payer-reports";
         } else {

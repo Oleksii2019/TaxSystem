@@ -41,10 +41,10 @@ public class Authorization implements Filter {
     }
 
 
-    private Boolean checkPageAccess(String carrentURL, String userRole) {
+    private Boolean checkPageAccess(String carrentURI, String userRole) {
         boolean res = true;
         for(TableOfURI e : TableOfURI.values()) {
-            if (e.getPagePath().equals(carrentURL)) {
+            if (e.getPagePath().equals(carrentURI)) {
                 if (UserRole.GUEST.toString().equals(userRole)) {
                     res = e.getAccessForGuest();
                 }
