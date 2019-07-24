@@ -4,42 +4,42 @@ import org.model.UserRole;
 
 public class Officer extends User {
 
+    private Officer() {
+    }
+
+    public static Builder builder() {
+        return new Officer.Builder();
+    }
+
     public static class Builder {
-        private String login;
-        private String name;
-        private String password;
-        private UserRole role;
+        private Officer officer = new Officer();
+
+        private Builder() {
+        }
 
         public Builder setLogin(String login) {
-            this.login = login;
+            officer.setLogin(login);
             return this;
         }
 
         public Builder setName(String name) {
-            this.name = name;
+            officer.setName(name);
             return this;
         }
 
         public Builder setPassword(String password) {
-            this.password = password;
+            officer.setPassword(password);
             return this;
         }
 
         public Builder setRole(UserRole role) {
-            this.role = role;
+            officer.setRole(role);
             return this;
         }
 
         public Officer build() {
-            return new Officer(this);
+            return officer;
         }
-    }
-
-    private Officer(Builder builder) {
-        super.setLogin(builder.login);
-        super.setName(builder.name);
-        super.setPassword(builder.password);
-        super.setRole(builder.role);
     }
 
 }

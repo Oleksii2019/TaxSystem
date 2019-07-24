@@ -25,8 +25,7 @@ public class JDBCPayerDao implements PayerDao {
             if (st.executeQuery(query).next()) {
                 result = true;
             }
-
-            //            Payer p = new Payer();
+//            Payer p = new Payer();
 //            while (rs.next()) {
 //                p.setLogin(rs.getString("login"));
 //                p.setName(rs.getString("name"));
