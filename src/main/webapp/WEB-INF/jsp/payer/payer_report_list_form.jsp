@@ -32,9 +32,9 @@
 <table class="text" >
     <tr>
         <td>
-            <!--            <var>nikname</var>-->
-            <!--            &nbsp;|&nbsp;-->
-            <a href="/logout" th:text="#{logout.menu}">Logout</a>
+            <c:out value="${sessionScope.userName}" default=""/>
+            &nbsp;|&nbsp;
+            <a href="/tax_system/logout"><fmt:message key="logout.menu"/></a>
         </td>
         <td class="rightcol">
             <a href="${pageContext.request.requestURL.toString()}?lang=en">English</a>

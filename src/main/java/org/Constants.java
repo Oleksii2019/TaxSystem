@@ -8,10 +8,16 @@ public class Constants {
 
     // Session context attribute name for current choice of
     // internationalization
-    public static final String LANGUAGE = "language";
+    public static final String LANGUAGE_PARAMETER = "language";
+
+    // Default user name "guest"
+    public static final String GUEST_USER_NAME = "Guest";
+
+    // logout command
+    public static final String LOGOUT_COMMAND = "logout";
 
     // Internationalization choice values
-    public enum Localization { EN, UK };
+    public enum Localization {EN, UK};
 
     // Separating character for URI-string
     public static final String SEPARATOR = "/";
@@ -21,5 +27,15 @@ public class Constants {
 
     // Empty string
     public static final String EMPTY_STRING = "";
+
+    // Names of parameters
+    public static final String LOGIN_PARAMETER = "login";
+    public static final String PASSWORD_PARAMETER = "password";
+    public static final String LOGGED_USERS_PARAMETER = "loggedUsers";
+    public static final String USER_NAME_PARAMETER = "userName";
+    public static final String USER_ROLE_PARAMETER = "role";
+
+
+
 
 }

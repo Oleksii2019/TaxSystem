@@ -1,5 +1,7 @@
 package org.manager.command;
 
+import org.model.UserRole;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -9,12 +11,13 @@ public class LogInCommand implements Command {
 
     @Override
     public String execute(HttpServletRequest request) {
-        String name = request.getParameter("login");
-        String password = request.getParameter("password");
+        String name = request.getParameter(LOGIN_PARAMETER);
+        String password = request.getParameter(PASSWORD_PARAMETER);
         setInputMistakeSign(request);
 
         if ((name == null) || name.isEmpty()
                 || (password == null) || password.isEmpty()
+                || !request.getSession().getAttribute(USER_NAME_PARAMETER).equals("Guest")
                 || CommandUtility.IsUserLogged(request, name)) {
             return getURIForRequestPage(request);
         }
@@ -22,13 +25,14 @@ public class LogInCommand implements Command {
 //todo: check login with DB
 
         if (name.equals("Admin")){
-//            CommandUtility.addToLoggedUsers(request, name);
-//            CommandUtility.setUserRole(request, "adminRole", name);
+            CommandUtility.addToLoggedUsers(request, name);
+            CommandUtility.setUserAndRole(request, UserRole.OFFICER.toString(), name);
             removeInputMistakeSign(request);
-            return "/tax_system/payer-reports";
+            return "/tax_system/officer-reports";
         } else if(name.equals("User")) {
-//            CommandUtility.setUserRole(request, "userRole", name);
-//            removeInputMistakeSign(request);
+            CommandUtility.addToLoggedUsers(request, name);
+            CommandUtility.setUserAndRole(request, UserRole.PAYER.toString(), name);
+            removeInputMistakeSign(request);
             return "/tax_system/payer-reports";
         } else {
 //            CommandUtility.setUserRole(request, "unknownRole", name);
@@ -64,6 +68,6 @@ public class LogInCommand implements Command {
                 .replaceAll(request.getRequestURI()
                                    .substring(request.getRequestURI()
                                    .lastIndexOf(SEPARATOR)),
-                            "");
+                            EMPTY_STRING);
     }
 }

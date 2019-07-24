@@ -51,7 +51,7 @@
                 <h3 id="message-title" style="color:#ff0000"><fmt:message key="message.registration.error"/></h3>
             </c:if>
             <h2 class="page-header"><fmt:message key="registration.inscription"/></h2>
-            <form style="margin-bottom: 30px" name="form" autocomplete="off" novalidate ng-submit="form.$valid && sendForm(auth)">
+            <form style="margin-bottom: 30px" id="main-form" method="get" action=" ${pageContext.request.requestURL.toString()}/login" autocomplete="off" novalidate>
                 <div class="form-group">
                     <label id="inputNameLabel" for="exampleInputName"><fmt:message key="name.lable"/></label>
                     <input type="text"
@@ -76,7 +76,7 @@
                            placeholder="Password" <fmt:message key="password.lable"/>
                            required>
                 </div>
-                <button type="submit" class="btn btn-success" style="margin-top:30px" ng-disabled="form.$invalid">
+                <button type="submit" id="sbmBtn" class="btn btn-success" style="margin-top:30px" disabled="disabled" ${ condition ? 'disabled="disabled"' : ''}>
                     <fmt:message key="submit.lable"/>
 <%--                    Submit--%>
                 </button>
@@ -86,9 +86,20 @@
 </div>
 <div>
     <h1 hidden id="messageOK" th:text="#{message.registration.ok}">Ok</h1>
-    <h1 hidden id="messageErr" th:text="#{message.registration.error}">Error</h1>
     <h1 hidden id="messageDbErr" th:text="#{message.registration.db.error}">Error</h1>
 </div>
-<%--<script type="text/javascript" src="/js/reg_form.js"></script>--%>
+<script type="text/javascript">
+    var select = document.getElementById("main-form");
+
+    (function() {
+        var button = document.getElementById("sbmBtn");
+        var mess = document.getElementById("message-title");
+        select.addEventListener("change", function(e) {
+            button.disabled = false;
+            mess.hidden = true;
+
+        });
+    })();
+</script>
 </body>
 </html>
