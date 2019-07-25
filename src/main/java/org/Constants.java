@@ -35,6 +35,9 @@ public class Constants {
     public static final String USER_NAME_PARAMETER = "userName";
     public static final String USER_ROLE_PARAMETER = "role";
 
+    // Date and time format pattern
+    public static final String DATE_TIME_FORMAT_PATTERN = "yyyy-MM-dd HH:mm:ss";
+
 
 
 

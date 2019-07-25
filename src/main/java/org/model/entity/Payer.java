@@ -3,13 +3,13 @@ package org.model.entity;
 import org.model.UserRole;
 
 public class Payer extends User {
-    private Officer officer;
+    private Long officerID;
 
-    public Officer getOfficer() {
-        return officer;
+    public Long getOfficerID() {
+        return officerID;
     }
-    public void setOfficer(Officer officer) {
-        this.officer = officer;
+    public void setOfficerID(Long officerID) {
+        this.officerID = officerID;
     }
 
     private Payer() {
@@ -45,8 +45,8 @@ public class Payer extends User {
             return this;
         }
 
-        public Builder setOfficer(Officer officer) {
-            payer.setOfficer(officer);
+        public Builder setOfficer(Long officerID) {
+            payer.setOfficerID(officerID);
             return this;
         }
 

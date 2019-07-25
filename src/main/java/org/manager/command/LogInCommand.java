@@ -2,9 +2,10 @@ package org.manager.command;
 
 import org.model.UserRole;
 import org.model.dao.DaoFactory;
+import org.model.entity.Report;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import java.util.List;
 
 import static org.Constants.*;
 
@@ -12,38 +13,37 @@ public class LogInCommand implements Command {
 
     @Override
     public String execute(HttpServletRequest request) {
-        String name = request.getParameter(LOGIN_PARAMETER);
+        String login = request.getParameter(LOGIN_PARAMETER);
         String password = request.getParameter(PASSWORD_PARAMETER);
+        String person_role = request.getParameter(USER_ROLE_PARAMETER);
         setInputMistakeSign(request);
 
-        if ((name == null) || name.isEmpty()
+        if ((login == null) || login.isEmpty()
                 || (password == null) || password.isEmpty()
                 || !request.getSession().getAttribute(USER_NAME_PARAMETER)
                    .equals(GUEST_USER_NAME)
-                || CommandUtility.IsUserLogged(request, name)) {
+                || CommandUtility.IsUserLogged(request, login)) {
             return getURIForRequestPage(request);
         }
-//        System.out.println(name + " " + password);
-//todo: check login with DB
 
-        if (name.equals("Admin")){
-            CommandUtility.addToLoggedUsers(request, name);
-            CommandUtility.setUserAndRole(request,
-                    UserRole.OFFICER.toString(), name);
-            removeInputMistakeSign(request);
+        List<Report> rl;
+        if (UserRole.OFFICER.toString().equals(person_role)
+                && DaoFactory.getInstance().createOfficerDao()
+                .matchForLoginAndPassword(login, password)){
+            UserRegistrationInApp(request, login, person_role);
+            rl = DaoFactory.getInstance().createReportDao().getNotAcceptedReportsForOfficerLogin(login);
+            System.out.println("Получено записей: " + rl.size());
             return "/tax_system/officer-reports";
-        } else if(DaoFactory.getInstance().createPayerDao()
-                .matchForLoginAndPassword(name, password)) {
-            CommandUtility.addToLoggedUsers(request, name);
-            CommandUtility.setUserAndRole(request,
-                    UserRole.PAYER.toString(), name);
-            removeInputMistakeSign(request);
+        } else if(UserRole.PAYER.toString().equals(person_role)
+                && DaoFactory.getInstance().createPayerDao()
+                .matchForLoginAndPassword(login, password)) {
+            UserRegistrationInApp(request, login, person_role);
+            rl = DaoFactory.getInstance().createReportDao().getNotAcceptedReportsForPayerLogin(login);
+            System.out.println("Получено записей: " + rl.size());
             return "/tax_system/payer-reports";
         } else {
-//            CommandUtility.setUserRole(request, "unknownRole", name);
             return getURIForRequestPage(request);
         }
-
     }
 
     /**
@@ -51,8 +51,7 @@ public class LogInCommand implements Command {
      * @param request
      */
     private void setInputMistakeSign(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        session.setAttribute(INPUT_MISTAKE_SIGN, EMPTY_STRING);
+        request.getSession().setAttribute(INPUT_MISTAKE_SIGN, EMPTY_STRING);
     }
 
     /**
@@ -60,8 +59,7 @@ public class LogInCommand implements Command {
      * @param request
      */
     private void removeInputMistakeSign(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        session.removeAttribute(INPUT_MISTAKE_SIGN);
+        request.getSession().removeAttribute(INPUT_MISTAKE_SIGN);
     }
 
     /**
@@ -74,5 +72,13 @@ public class LogInCommand implements Command {
                                    .substring(request.getRequestURI()
                                    .lastIndexOf(SEPARATOR)),
                             EMPTY_STRING);
+    }
+
+    private void UserRegistrationInApp(HttpServletRequest request,
+                                       String login,
+                                       String userRole) {
+        CommandUtility.addToLoggedUsers(request, login);
+        CommandUtility.setUserAndRole(request, userRole, login);
+        removeInputMistakeSign(request);
     }
 }

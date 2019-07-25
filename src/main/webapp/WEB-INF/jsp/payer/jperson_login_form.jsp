@@ -53,7 +53,8 @@
                 <h3 id="message-title" style="color:#ff0000"><fmt:message key="message.login.error"/></h3>
             </c:if>
             <h1 class="page-header"><fmt:message key="login.title"/></h1>
-            <form style="margin-bottom: 30px" id="main-form" method="get" action=" ${pageContext.request.requestURL.toString()}/login" autocomplete="off" novalidate>
+            <form style="margin-bottom: 30px" id="main-form" method="post" action=" ${pageContext.request.requestURL.toString()}/login" autocomplete="off" novalidate>
+                <input hidden type="text" name="role" value="PAYER"><P>
                 <div class="form-group">
                     <label  class="control-label" for="exampleInputLogin"><fmt:message key="login.lable"/></label>
                     <input type = "text"
