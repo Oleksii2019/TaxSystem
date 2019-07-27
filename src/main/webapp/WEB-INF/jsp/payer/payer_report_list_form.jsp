@@ -48,13 +48,13 @@
     <form action="${pageContext.request.requestURL.toString()}/make-report" method="post">
 
 
-        <select id="listofreport" style="margin-left: 40px" name="report" size="5" >
+        <select id="listofreport" style="margin-left: 40px" name="selReport" size="5" >
             <c:forEach items="${report}" var="i">
                 <c:if test="${i.assessed eq true}">
-                    <option value="${i.creationTime}"><fmt:message key="report.from.words"/> ${i.creationTime} <fmt:message key="assessed.word"/></option>
+                    <option value="${i.payerID}S${i.creationTime}"><fmt:message key="report.from.words"/> ${i.creationTime} <fmt:message key="assessed.word"/></option>
                 </c:if>
                 <c:if test="${i.assessed eq false}">
-                    <option value="${i.creationTime}"><fmt:message key="report.from.words"/> ${i.creationTime} <fmt:message key="not.assessed.word"/></option>
+                    <option value="${i.payerID}S${i.creationTime}"><fmt:message key="report.from.words"/> ${i.creationTime} <fmt:message key="not.assessed.word"/></option>
                 </c:if>
             </c:forEach>
         </select>

@@ -89,7 +89,18 @@ public class Service {
         if (payerDao == null) {
             payerDao = DaoFactory.getInstance().createPayerDao();
         }
-        reportDao.addNewReport(payerDao.getPayerIdByLogin(login));
+        reportDao.addNewReport(payerDao.getPayerIdByLogin(login),
+                payerDao.getOfficerIdByPayerID(login));
+    }
+
+    public void acceptReport(String selectedReport, String login) {
+        if (reportDao == null) {
+            reportDao = DaoFactory.getInstance().createReportDao();
+        }
+        if (officerDao == null) {
+            officerDao = DaoFactory.getInstance().createOfficerDao();
+        }
+        reportDao.acceptReport(selectedReport, officerDao.getOfficerIdByLogin(login));
     }
 
 }

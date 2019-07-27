@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 import static org.Constants.DATE_TIME_FORMAT_PATTERN;
 
 public class JDBCReportDao  implements ReportDao {
@@ -18,19 +19,48 @@ public class JDBCReportDao  implements ReportDao {
         this.connection = connection;
     }
 
+
     @Override
-    public void addNewReport(Long payerID) {
+    public void acceptReport(String selectedReport, Long officerID) {
+        String[] args = selectedReport.split("S");
+
+        final String query =
+                "update reports set accepted = true, assessed = true, "
+                + "taxofficer = " + officerID + ", accept_time = \""
+                + LocalDateTime.now().format(ISO_LOCAL_DATE_TIME)
+//                        LocalDateTime.now().format(DateTimeFormatter
+//                        .ofPattern(DATE_TIME_FORMAT_PATTERN))
+                + "\" where taxpayer = " + Integer.valueOf(args[0])
+                + " and creation_time = \""
+                + stringToLocalDateTime(args[1]) + "\";";
+        try (Statement st = connection.createStatement()) {
+            if (st.executeUpdate(query) == 0) {
+                // TODO SQLException, writing not execute
+                System.out.println("updating DB not execute");
+            }
+        } catch (SQLException e) {
+            // TODO SQLException
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void addNewReport(Long payerID, Long officerID) {
 
 //        insert into reports (accept_time, accepted, assessed, creation_time, taxpayer,
 //        taxofficer) value (null, false, false, now(), 4, null); ISO_LOCAL_DATE_TIME
 
+//        + LocalDateTime.now().format(DateTimeFormatter
+//                .ofPattern(DATE_TIME_FORMAT_PATTERN))
+
+//         LocalDateTime.now().format(ISO_LOCAL_DATE_TIME)
+// TODO taxofficer не должен быть нулевым для совместимости БД
         final String query =
                 "insert into reports (accept_time, accepted, assessed, "
                 + "creation_time, taxpayer, taxofficer) value (null, "
                 + "false, false, \""
-                + LocalDateTime.now().format(DateTimeFormatter
-                        .ofPattern(DATE_TIME_FORMAT_PATTERN))
-                + "\", " + payerID + ", null);";
+                + LocalDateTime.now().format(ISO_LOCAL_DATE_TIME)
+                + "\", " + payerID + ", " + officerID + ");";
         try (Statement st = connection.createStatement()) {
             if (st.executeUpdate(query) == 0) {
                 // TODO SQLException, writing not execute

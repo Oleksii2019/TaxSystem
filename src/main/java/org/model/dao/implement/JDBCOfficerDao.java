@@ -3,6 +3,7 @@ package org.model.dao.implement;
 import org.model.dao.OfficerDao;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -11,6 +12,24 @@ public class JDBCOfficerDao implements OfficerDao {
 
     public JDBCOfficerDao(Connection connection) {
         this.connection = connection;
+    }
+
+    @Override
+    public Long getOfficerIdByLogin(String payerLogin) {
+        Long res = 0L;
+        final String query =
+                "select id from taxofficers where login = \""
+                        + payerLogin + "\";";
+        try (Statement st = connection.createStatement()) {
+            ResultSet rs = st.executeQuery(query);
+            while (rs.next()) {
+                res = rs.getLong("id");
+            }
+        } catch (SQLException e) {
+            // TODO SQLException
+            e.printStackTrace();
+        }
+        return res;
     }
 
     @Override

@@ -17,6 +17,25 @@ public class JDBCPayerDao implements PayerDao {
 
 
     @Override
+    public Long getOfficerIdByPayerID(String payerLogin) {
+        Long res = 0L;
+        final String query =
+                "select taxofficer from taxpayers where login = \""
+                        + payerLogin + "\";";
+        try (Statement st = connection.createStatement()) {
+            ResultSet rs = st.executeQuery(query);
+            while (rs.next()) {
+                res = rs.getLong("taxofficer");
+            }
+        } catch (SQLException e) {
+            // TODO SQLException
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+
+    @Override
     public Long getPayerIdByLogin(String payerLogin) {
         Long res = 0L;
         final String query =

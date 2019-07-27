@@ -28,6 +28,9 @@ public class MakeReportCommand implements Command {
                 REPORT_RECLAMATION_PARAMETER);
         String reportReclamationText = request.getParameter(
                 REPORT_RECLAMATION_TEXT_PARAMETER);
+        String selectedReport = request.getParameter(
+                SELECTED_REPORT_PARAMETER);
+
 
         if (UserRole.PAYER.toString().equals(person_role)
                 && (createPayerReport != null)) {
@@ -42,9 +45,12 @@ public class MakeReportCommand implements Command {
         } else if (UserRole.OFFICER.toString().equals(person_role)
                 && (acceptReport != null)) {
             System.out.println("Принятие отчета");
+            Service.getInstance().acceptReport(selectedReport, login);
         } else if (UserRole.OFFICER.toString().equals(person_role)
                 && (reportReclamation != null)) {
             System.out.println("Подготовка рекламации на отчет");
+
+
         } else {
             System.out.println("Unknown make report command or user role");
         }

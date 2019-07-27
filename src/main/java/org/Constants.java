@@ -45,6 +45,7 @@ public class Constants {
     public static final String ACCEPT_REPORT_PARAMETER = "accBtn";
     public static final String REPORT_RECLAMATION_PARAMETER = "reclBtn";
     public static final String REPORT_RECLAMATION_TEXT_PARAMETER = "reclText";
+    public static final String SELECTED_REPORT_PARAMETER = "selReport";
 
     // Date and time format pattern for reading from DB
     // as string and transforming to LocalDateTime
