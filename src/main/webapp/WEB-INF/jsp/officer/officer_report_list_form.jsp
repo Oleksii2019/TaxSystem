@@ -17,7 +17,7 @@
             border-spacing: 0;
             background:#ccc;
             padding:5px;
-            margin:5px 0px
+            margin:5px 0px;
         }
         table.text td {
             width: 50%;
@@ -45,15 +45,24 @@
 </table>
 <div>
     <h1 style="margin-left: 40px"><fmt:message key="payers.report.list.form"/></h1>
-    <form action="/officer_report_list/create" method="post">
-        <select id="listofreport" style="margin-left: 40px" name="report" size="5"></select>
+    <form action="${pageContext.request.requestURL.toString()}/make-report" method="post">
+        <select id="listofreport" style="margin-left: 40px" name="report" size="5" >
+            <c:forEach items="${report}" var="i">
+                <c:if test="${i.assessed eq true}">
+                    <option value="${i.creationTime}"><fmt:message key="report.from.words"/> ${i.payerName} ${i.creationTime} <fmt:message key="assessed.word"/></option>
+                </c:if>
+                <c:if test="${i.assessed eq false}">
+                    <option value="${i.creationTime}"><fmt:message key="report.from.words"/> ${i.payerName} ${i.creationTime} <fmt:message key="not.assessed.word"/></option>
+                </c:if>
+            </c:forEach>
+        </select>
         <p>
             <button id="accBtn" class="btn btn-success" name="accBtn" style="margin-top:10px; margin-left: 40px" disabled>
                 <fmt:message key="accept.report.button.lable"/>
 <%--                Accept report--%>
             </button>
         </p>
-        <textarea style="margin-top:20px; margin-left: 40px" name="reclText" th:attr="placeholder=#{reclamation.text.lable}"></textarea>
+        <textarea rows="3" cols="45" style="margin-top:20px; margin-left: 40px" name="reclText" placeholder="<fmt:message key="reclamation.text.lable"/>"></textarea>
         <p>
             <button id="reclBtn" class="btn btn-success" name="reclBtn" style="margin-top:10px; margin-left: 40px" disabled>
                 <fmt:message key="send.reclamation.button.lable"/>
@@ -62,6 +71,19 @@
         </p>
     </form>
 </div>
-<script type="text/javascript" src="/js/officer_rep_list_form.js"></script>
+<script type="text/javascript">
+
+    var select = document.getElementById("listofreport");
+    var button1 = document.getElementById("accBtn");
+    var button2 = document.getElementById("reclBtn");
+
+    (function() {
+        select.addEventListener("change", function(e) {
+            button1.disabled = false;
+            button2.disabled = false;
+        });
+    })();
+
+</script>
 </body>
 </html>

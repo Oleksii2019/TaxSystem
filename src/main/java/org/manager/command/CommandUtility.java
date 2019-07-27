@@ -38,4 +38,32 @@ public class CommandUtility {
         request.getSession().removeAttribute(userName);
     }
 
+    /**
+     * Setting sign of user's mistake during input of authorization data
+     * @param request
+     */
+    static void setInputMistakeSign(HttpServletRequest request) {
+        request.getSession().setAttribute(INPUT_MISTAKE_SIGN, EMPTY_STRING);
+    }
+
+    /**
+     * Remove sign of user's mistake during input of authorization data
+     * @param request
+     */
+    static void removeInputMistakeSign(HttpServletRequest request) {
+        request.getSession().removeAttribute(INPUT_MISTAKE_SIGN);
+    }
+
+    /**
+     * Form request URI for redirect back
+     * @param request
+     */
+    static String getURIForRequestPage(HttpServletRequest request) {
+        return request.getRequestURI()
+                .replaceAll(request.getRequestURI()
+                                .substring(request.getRequestURI()
+                                        .lastIndexOf(SEPARATOR)),
+                        EMPTY_STRING);
+    }
+
 }

@@ -1,7 +1,5 @@
 package org.model.entity;
 
-import org.model.UserRole;
-
 public class Payer extends User {
     private Long officerID;
 
@@ -40,12 +38,12 @@ public class Payer extends User {
             return this;
         }
 
-        public Builder setRole(UserRole role) {
+        public Builder setRole(int role) {
             payer.setRole(role);
             return this;
         }
 
-        public Builder setOfficer(Long officerID) {
+        public Builder setOfficerID(Long officerID) {
             payer.setOfficerID(officerID);
             return this;
         }

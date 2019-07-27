@@ -1,13 +1,12 @@
 package org.manager.filters;
 
-import org.model.UserRole;
-
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-import static org.Constants.*;
+import static org.Constants.LANGUAGE_PARAMETER;
+import static org.Constants.Localization;
 
 /**
  *  For servlet internalization according to user's choice on page
@@ -28,11 +27,6 @@ public class Internalization implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpSession session = request.getSession();
 
-        if (session.isNew()) {
-            session.setAttribute(LANGUAGE_PARAMETER, Localization.UK.toString());
-            session.setAttribute(USER_NAME_PARAMETER, GUEST_USER_NAME);
-            session.setAttribute(USER_ROLE_PARAMETER, UserRole.GUEST.toString());
-        }
         String reqLanguage = request.getParameter("lang");
         if (Localization.UK.toString().equalsIgnoreCase(reqLanguage)
                 || Localization.EN.toString().equalsIgnoreCase(reqLanguage)) {

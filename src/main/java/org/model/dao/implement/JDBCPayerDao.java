@@ -4,10 +4,9 @@ import org.model.dao.PayerDao;
 import org.model.entity.Payer;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 public class JDBCPayerDao implements PayerDao {
     private Connection connection;
@@ -18,14 +17,45 @@ public class JDBCPayerDao implements PayerDao {
 
 
     @Override
-    public List<Payer> getNotAcceptedReportsForOfficerLogin(String login) {
-        return new ArrayList<>();
+    public Long getPayerIdByLogin(String payerLogin) {
+        Long res = 0L;
+        final String query =
+                "select id from taxpayers where login = \""
+                + payerLogin + "\";";
+        try (Statement st = connection.createStatement()) {
+            ResultSet rs = st.executeQuery(query);
+            while (rs.next()) {
+                res = rs.getLong("id");
+            }
+        } catch (SQLException e) {
+            // TODO SQLException
+            e.printStackTrace();
+        }
+        return res;
     }
 
     @Override
-    public List<Payer> getNotAcceptedReportsForPayerLogin(String login) {
-        return new ArrayList<>();
+    public void addNewPayer(Payer payer) {
+//       insert into taxpayers (login, name, password, role, taxofficer)
+//       value ("Nike3", "Nike3 Payer", "22", 1, 2);
+
+        final String query =
+                "insert into taxpayers (login, name, password, role, "
+                        + "taxofficer) value (\"" + payer.getLogin() + "\", \""
+                        + payer.getName() + "\", \"" + payer.getPassword()
+                        + "\", " + payer.getRole() + ", "
+                        + payer.getOfficerID() + ");";
+        try (Statement st = connection.createStatement()) {
+            if (st.executeUpdate(query)==0) {
+                // TODO SQLException, writing not execute
+                System.out.println("writing to DB not execute");
+            }
+        } catch (SQLException e) {
+            // TODO SQLException
+            e.printStackTrace();
+        }
     }
+
 
     @Override
     public boolean matchForLoginAndPassword(String login, String password) {
@@ -37,6 +67,23 @@ public class JDBCPayerDao implements PayerDao {
         try (Statement st = connection.createStatement()) {
             if (st.executeQuery(query).next()) {
                 result = true;
+            }
+        } catch(SQLException e) {
+            // TODO SQLException
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    @Override
+    public boolean notMatchForLogin(String login) {
+        boolean result = true;
+
+        final String query = "select * from taxpayers where login = "
+                + "\"" + login + "\"";
+        try (Statement st = connection.createStatement()) {
+            if (st.executeQuery(query).next()) {
+                result = false;
             }
         } catch(SQLException e) {
             // TODO SQLException

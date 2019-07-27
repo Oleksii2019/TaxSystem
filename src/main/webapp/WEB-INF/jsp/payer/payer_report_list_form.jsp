@@ -43,10 +43,29 @@
         </td>
     </tr>
 </table>
-<div ng-app="users_form" ng-controller="UserCtrl">
+<div>
     <h1 data-ng-init="getReports()" style="margin-left: 40px"><fmt:message key="payer.report.list.form"/></h1>
-    <form action="/payer_report_list/creation" method="post">
-        <select id="listofreport" style="margin-left: 40px" name="report" size="5"></select>
+    <form action="${pageContext.request.requestURL.toString()}/make-report" method="post">
+
+
+        <select id="listofreport" style="margin-left: 40px" name="report" size="5" >
+            <c:forEach items="${report}" var="i">
+                <c:if test="${i.assessed eq true}">
+                    <option value="${i.creationTime}"><fmt:message key="report.from.words"/> ${i.creationTime} <fmt:message key="assessed.word"/></option>
+                </c:if>
+                <c:if test="${i.assessed eq false}">
+                    <option value="${i.creationTime}"><fmt:message key="report.from.words"/> ${i.creationTime} <fmt:message key="not.assessed.word"/></option>
+                </c:if>
+            </c:forEach>
+        </select>
+
+        <select id="listofnote" style="margin-left: 40px; margin-bottom: 5%" size="2">
+            <c:forEach items="${report}" var="i">
+                <option value="${i.creationTime}">${i.note}</option>
+            </c:forEach>
+        </select>
+
+    <%--        <select id="listofreport" style="margin-left: 40px" name="report" size="5"></select>--%>
         <p>
             <button id="chBtn" name="editBtn" class="btn btn-success" style="margin-top:10px; margin-left: 40px" disabled>
                 <fmt:message key="edit.report.button.lable"/>
@@ -55,7 +74,7 @@
         </p>
     </form>
 </div>
-<form action="/payer_report_list/creation" method="post">
+<form action="${pageContext.request.requestURL.toString()}/make-report" method="post">
     <button class="btn btn-success" name="createBtn" style="margin-top:20px; margin-left: 40px">
         <fmt:message key="create.report.button.lable"/>
 <%--        Create new report--%>
@@ -66,6 +85,31 @@
     </button>
 </form>
 
-<%--<script type="text/javascript" src="/js/payer_rep_list_form.js"></script>--%>
+<script type="text/javascript">
+
+    var select = document.getElementById("listofreport");
+    var button = document.getElementById("chBtn");
+    var note = document.getElementById("listofnote");
+    note.hidden = true;
+
+    (function() {
+        select.addEventListener("change", function(e) {
+            button.disabled = false;
+            var sl = select.options[select.selectedIndex].index;
+            for (var i = 0; i < note.options.length; i++) {
+                note.options[i].hidden = true;
+            }
+            if(note.options[sl].text==="") {
+                note.hidden = true;
+            } else {
+                note.hidden = false;
+                note.options[sl].hidden = false;
+            }
+            // console.log(sl);
+
+        });
+    })();
+
+</script>
 </body>
 </html>

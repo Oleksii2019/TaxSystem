@@ -54,7 +54,7 @@
             </c:if>
 <%--            <h3 id="message-title"><c:out value="${sessionScope.err}" default="DDDDD"/></h3>        ${pageContext.request.contextPath}            --%>
             <h1 class="page-header"><fmt:message key="login.title"/></h1>
-            <form style="margin-bottom: 30px" id="main-form" method="post" action=" ${pageContext.request.requestURL.toString()}/login" autocomplete="off" novalidate>
+            <form style="margin-bottom: 30px" id="main-form" method="post" action="${pageContext.request.requestURL.toString()}/login" autocomplete="off" novalidate>
                 <input hidden type="text" name="role" value="PAYER"><P>
                 <div class="form-group">
                     <label  class="control-label" for="exampleInputLogin"><fmt:message key="login.lable"/></label>

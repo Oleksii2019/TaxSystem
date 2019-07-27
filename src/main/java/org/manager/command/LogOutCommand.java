@@ -1,5 +1,6 @@
 package org.manager.command;
 
+import org.TableOfURI;
 import org.model.UserRole;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +15,7 @@ public class LogOutCommand implements Command  {
         CommandUtility.deleteUserAndRole(request);
         request.getSession().setAttribute(USER_NAME_PARAMETER, GUEST_USER_NAME);
         request.getSession().setAttribute(USER_ROLE_PARAMETER, UserRole.GUEST.toString());
-        return "/tax_system/home";
+        return TableOfURI.HOME.getPagePath();
     }
 
 }

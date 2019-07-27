@@ -49,6 +49,18 @@
     <filter-name>Authorization</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+  <filter>
+    <filter-name>Dataupdate</filter-name>
+    <filter-class>org.manager.filters.UpdateFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>Dataupdate</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <listener>
+    <listener-class>org.manager.listeners.SessionListener</listener-class>
+  </listener>
 
   <servlet>
     <servlet-name>Servlet</servlet-name>

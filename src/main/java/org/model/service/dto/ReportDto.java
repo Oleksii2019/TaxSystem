@@ -1,6 +1,6 @@
-package org.model.entity;
+package org.model.service.dto;
 
-public class Report {
+public class ReportDto {
     private Long id;
     private String creationTime;
     private String acceptTime;
@@ -84,63 +84,62 @@ public class Report {
         this.note = note;
     }
 
-
-    private Report() {
+    private ReportDto() {
     }
 
     public static Builder builder() {
-        return new Report.Builder();
+        return new ReportDto.Builder();
     }
 
     public static class Builder {
-        private Report report = new Report();
+        private ReportDto reportDto = new ReportDto();
 
         private Builder() {
         }
 
         public Builder setCreationTime(String creationTime) {
-            report.setCreationTime(creationTime);
+            reportDto.setCreationTime(creationTime);
             return this;
         }
 
         public Builder setAcceptTime(String acceptTime) {
-            report.setAcceptTime(acceptTime);
+            reportDto.setAcceptTime(acceptTime);
             return this;
         }
 
         public Builder setAccepted(Boolean accepted) {
-            report.setAccepted(accepted);
+            reportDto.setAccepted(accepted);
             return this;
         }
 
         public Builder setAssessed(Boolean assessed) {
-            report.setAssessed(assessed);
+            reportDto.setAssessed(assessed);
             return this;
         }
 
         public Builder setPayerID(Long payerID) {
-            report.setPayerID(payerID);
+            reportDto.setPayerID(payerID);
             return this;
         }
 
         public Builder setOfficerID(Long officerID) {
-            report.setOfficerID(officerID);
+            reportDto.setOfficerID(officerID);
             return this;
         }
 
         public Builder setPayerName(String payerName) {
-            report.setPayerName(payerName);
+            reportDto.setPayerName(payerName);
             return this;
         }
 
         public Builder setNote(String note) {
-            report.setNote(note);
+            reportDto.setNote(note);
             return this;
         }
-
-        public Report build() {
-            return report;
+        public ReportDto build() {
+            return reportDto;
         }
     }
+
 
 }

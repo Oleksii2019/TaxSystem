@@ -51,11 +51,12 @@
                 <h3 id="message-title" style="color:#ff0000"><fmt:message key="message.registration.error"/></h3>
             </c:if>
             <h2 class="page-header"><fmt:message key="registration.inscription"/></h2>
-            <form style="margin-bottom: 30px" id="main-form" method="get" action=" ${pageContext.request.requestURL.toString()}/login" autocomplete="off" novalidate>
+            <form style="margin-bottom: 30px" id="main-form" method="get" action=" ${pageContext.request.requestURL.toString()}/registration" autocomplete="off" novalidate>
                 <div class="form-group">
                     <label id="inputNameLabel" for="exampleInputName"><fmt:message key="name.lable"/></label>
                     <input type="text"
                            class="form-control"
+                           name="reg_name"
                            id="exampleInputName"
                            placeholder="Name" <fmt:message key="name.lable"/>
                            required>
@@ -64,14 +65,16 @@
                     <label id="inputLoginLabel" for="exampleInputLogin"><fmt:message key="login.lable"/></label>
                     <input type="text"
                            class="form-control"
+                           name="login"
                            id="exampleInputLogin"
                            placeholder="Login" <fmt:message key="login.lable"/>
                            required>
                 </div>
                 <div class="form-group">
                     <label id="inputPasswordLabel" for="exampleInputPassword"><fmt:message key="password.lable"/></label>
-                    <input type="text"
+                    <input type="password"
                            class="form-control"
+                           name="password"
                            id="exampleInputPassword"
                            placeholder="Password" <fmt:message key="password.lable"/>
                            required>

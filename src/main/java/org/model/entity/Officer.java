@@ -1,7 +1,5 @@
 package org.model.entity;
 
-import org.model.UserRole;
-
 public class Officer extends User {
 
     private Officer() {
@@ -32,7 +30,7 @@ public class Officer extends User {
             return this;
         }
 
-        public Builder setRole(UserRole role) {
+        public Builder setRole(int role) {
             officer.setRole(role);
             return this;
         }

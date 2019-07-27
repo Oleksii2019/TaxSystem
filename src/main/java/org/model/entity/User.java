@@ -1,13 +1,11 @@
 package org.model.entity;
 
-import org.model.UserRole;
-
 public abstract class User {
     private Long id;
     private String login;
     private String name;
     private String password;
-    private UserRole role;
+    private int role;
 
     public User() {
     }
@@ -44,11 +42,11 @@ public abstract class User {
         this.password = password;
     }
 
-    public UserRole getRole() {
+    public int getRole() {
         return role;
     }
 
-    public void setRole(UserRole role) {
+    public void setRole(int role) {
         this.role = role;
     }
 }

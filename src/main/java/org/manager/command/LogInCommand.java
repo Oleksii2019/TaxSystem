@@ -1,13 +1,13 @@
 package org.manager.command;
 
+import org.TableOfURI;
 import org.model.UserRole;
-import org.model.dao.DaoFactory;
-import org.model.entity.Report;
+import org.model.service.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 import static org.Constants.*;
+import static org.manager.command.CommandUtility.*;
 
 public class LogInCommand implements Command {
 
@@ -26,53 +26,21 @@ public class LogInCommand implements Command {
             return getURIForRequestPage(request);
         }
 
-        List<Report> rl;
         if (UserRole.OFFICER.toString().equals(person_role)
-                && DaoFactory.getInstance().createOfficerDao()
-                .matchForLoginAndPassword(login, password)){
+                && Service.getInstance().IsOfficerAuthorizedUser(
+                        login, password)){
             UserRegistrationInApp(request, login, person_role);
-            rl = DaoFactory.getInstance().createReportDao().getNotAcceptedReportsForOfficerLogin(login);
-            System.out.println("Получено записей: " + rl.size());
-            return "/tax_system/officer-reports";
+            return TableOfURI.OFFICER_REPORTS.getPagePath();
         } else if(UserRole.PAYER.toString().equals(person_role)
-                && DaoFactory.getInstance().createPayerDao()
-                .matchForLoginAndPassword(login, password)) {
+                && Service.getInstance().IsPayerAuthorizedUser(
+                        login, password)) {
             UserRegistrationInApp(request, login, person_role);
-            rl = DaoFactory.getInstance().createReportDao().getNotAcceptedReportsForPayerLogin(login);
-            System.out.println("Получено записей: " + rl.size());
-            return "/tax_system/payer-reports";
+            return TableOfURI.PAYER_REPORTS.getPagePath();
         } else {
             return getURIForRequestPage(request);
         }
     }
 
-    /**
-     * Setting sign of user's mistake during input of authorization data
-     * @param request
-     */
-    private void setInputMistakeSign(HttpServletRequest request) {
-        request.getSession().setAttribute(INPUT_MISTAKE_SIGN, EMPTY_STRING);
-    }
-
-    /**
-     * Remove sign of user's mistake during input of authorization data
-     * @param request
-     */
-    private void removeInputMistakeSign(HttpServletRequest request) {
-        request.getSession().removeAttribute(INPUT_MISTAKE_SIGN);
-    }
-
-    /**
-     * Form request URI for redirect back
-     * @param request
-     */
-    private String getURIForRequestPage(HttpServletRequest request) {
-        return request.getRequestURI()
-                .replaceAll(request.getRequestURI()
-                                   .substring(request.getRequestURI()
-                                   .lastIndexOf(SEPARATOR)),
-                            EMPTY_STRING);
-    }
 
     private void UserRegistrationInApp(HttpServletRequest request,
                                        String login,

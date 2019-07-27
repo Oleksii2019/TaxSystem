@@ -3,16 +3,13 @@ package org.model.dao.implement;
 import org.model.dao.ReportDao;
 import org.model.entity.Report;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.Constants.*;
+import static org.Constants.DATE_TIME_FORMAT_PATTERN;
 
 public class JDBCReportDao  implements ReportDao {
     private Connection connection;
@@ -22,20 +19,56 @@ public class JDBCReportDao  implements ReportDao {
     }
 
     @Override
+    public void addNewReport(Long payerID) {
+
+//        insert into reports (accept_time, accepted, assessed, creation_time, taxpayer,
+//        taxofficer) value (null, false, false, now(), 4, null); ISO_LOCAL_DATE_TIME
+
+        final String query =
+                "insert into reports (accept_time, accepted, assessed, "
+                + "creation_time, taxpayer, taxofficer) value (null, "
+                + "false, false, \""
+                + LocalDateTime.now().format(DateTimeFormatter
+                        .ofPattern(DATE_TIME_FORMAT_PATTERN))
+                + "\", " + payerID + ", null);";
+        try (Statement st = connection.createStatement()) {
+            if (st.executeUpdate(query) == 0) {
+                // TODO SQLException, writing not execute
+                System.out.println("writing to DB not execute");
+            }
+        } catch (SQLException e) {
+            // TODO SQLException
+            e.printStackTrace();
+        }
+    }
+
+
+    @Override
     public List<Report> getNotAcceptedReportsForOfficerLogin(String login) {
+
         return loadDataWithConnection(
-                "select reports.* from reports "
-                        + "join taxofficers on reports.taxofficer = taxofficers.id "
-                        + "where login =\"" + login + "\" and accepted = false;"
+                "select reports.*, taxpayers.name, "
+                + "report_alteration.note from reports "
+                + "join taxpayers on reports.taxpayer = taxpayers.id "
+                + "join taxofficers on reports.taxofficer = taxofficers.id or "
+                + "taxofficers.id = taxpayers.taxofficer "
+                + "left join report_alteration on report_alteration.report "
+                + "= reports.id and report_alteration.accepted = false "
+                + "where taxofficers.login = \"" + login
+                + "\" and reports.accepted = false;"
         );
     }
 
     @Override
     public List<Report> getNotAcceptedReportsForPayerLogin(String login) {
+
         return loadDataWithConnection(
-                "select reports.* from reports "
-                        + "join taxpayers on reports.taxpayer = taxpayers.id "
-                        + "where login =\"" + login + "\" and accepted = false;"
+                "select reports.*, taxpayers.name, report_alteration.note from reports "
+//              + "join taxofficers on reports.taxofficer = taxofficers.id "
+                + "join taxpayers on reports.taxpayer = taxpayers.id "
+                + "left join report_alteration on  report_alteration.report = reports.id "
+                + "and report_alteration.accepted = false "
+                + "where taxpayers.login = \"" + login + "\" and reports.accepted=false;"
         );
     }
 
@@ -47,12 +80,12 @@ public class JDBCReportDao  implements ReportDao {
                 rl.add(Report.builder()
                         .setAccepted(rs.getBoolean("accepted"))
                         .setAssessed(rs.getBoolean("assessed"))
-                        .setCreationTime(stringToLocalDateTime(
-                                rs.getString("creation_time")))
-                        .setAcceptTime(stringToLocalDateTime(
-                                rs.getString("accept_time")))
+                        .setCreationTime(rs.getString("creation_time"))
+                        .setAcceptTime(rs.getString("accept_time"))
                         .setPayerID(rs.getLong("taxpayer"))
                         .setOfficerID(rs.getLong("taxofficer"))
+                        .setPayerName(rs.getString("name"))
+                        .setNote(rs.getString("note"))
                         .build()
                 );
             }
@@ -61,11 +94,6 @@ public class JDBCReportDao  implements ReportDao {
             e.printStackTrace();
         }
         return rl;
-    }
-
-    @Override
-    public boolean matchForLoginAndPassword(String login, String password) {
-        return false;
     }
 
     @Override
@@ -79,6 +107,7 @@ public class JDBCReportDao  implements ReportDao {
     }
 
 
+    // Метод преобразует время, полученное из БД как строка, в формат, к-ый использовался в БД при записи
     public LocalDateTime stringToLocalDateTime(String dateTime) {
         if (dateTime == null) {
             return null;

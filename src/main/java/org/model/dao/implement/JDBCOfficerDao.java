@@ -1,30 +1,16 @@
 package org.model.dao.implement;
 
 import org.model.dao.OfficerDao;
-import org.model.entity.Officer;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 public class JDBCOfficerDao implements OfficerDao {
     private Connection connection;
 
     public JDBCOfficerDao(Connection connection) {
         this.connection = connection;
-    }
-
-
-    @Override
-    public List<Officer> getNotAcceptedReportsForOfficerLogin(String login) {
-        return new ArrayList<>();
-    }
-
-    @Override
-    public List<Officer> getNotAcceptedReportsForPayerLogin(String login) {
-        return new ArrayList<>();
     }
 
     @Override

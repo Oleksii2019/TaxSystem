@@ -1,8 +1,7 @@
 package org.servlet;
 
-import org.manager.command.Command;
-import org.manager.command.LogInCommand;
-import org.manager.command.LogOutCommand;
+import org.TableOfURI;
+import org.manager.command.*;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -34,8 +33,10 @@ public class Servlet extends HttpServlet {
 
 //        commands.put("logout",
 //                new LogOutCommand());
-        commands.put("login", new LogInCommand());
+        commands.put(LOGIN_COMMAND, new LogInCommand());
         commands.put(LOGOUT_COMMAND, new LogOutCommand());
+        commands.put(REGISTRATION_COMMAND, new RegistrationCommand());
+        commands.put(MAKE_REPORT_COMMAND, new MakeReportCommand());
 //        commands.put("exception" , new ExceptionCommand());
 
     }
@@ -63,8 +64,7 @@ public class Servlet extends HttpServlet {
         if (request.getAttribute("logout") == null) {
             command = commands.getOrDefault(
                     path.substring(path.lastIndexOf(SEPARATOR) + 1),
-                    (r)->"/tax_system/home"); //"/WEB-INF/jsp/home.jsp" - for forward()
-
+                    (r)->TableOfURI.HOME.getPagePath()); //"/WEB-INF/jsp/home.jsp" - for forward()
         } else { // Принудительный logout
             request.removeAttribute(LOGOUT_COMMAND);
             command = commands.get(LOGOUT_COMMAND); //.getOrDefault("logout", (r)->"/tax_system/home");
