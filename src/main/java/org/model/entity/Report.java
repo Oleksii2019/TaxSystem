@@ -98,6 +98,11 @@ public class Report {
         private Builder() {
         }
 
+        public Builder setId(Long id) {
+            report.setId(id);
+            return this;
+        }
+
         public Builder setCreationTime(String creationTime) {
             report.setCreationTime(creationTime);
             return this;

@@ -39,9 +39,11 @@ public class MakeReportCommand implements Command {
         } else if (UserRole.PAYER.toString().equals(person_role)
                 && (createComplaint != null)) {
             System.out.println("Создание заявки на смену инспектора");
+            Service.getInstance().createComplaint(login);
         } else if (UserRole.PAYER.toString().equals(person_role)
                 && (editReportByPayer != null)) {
             System.out.println("Внесение изменений в существующий отчет");
+            Service.getInstance().editReportByPayer(selectedReport);
         } else if (UserRole.OFFICER.toString().equals(person_role)
                 && (acceptReport != null)) {
             System.out.println("Принятие отчета");
@@ -49,10 +51,10 @@ public class MakeReportCommand implements Command {
         } else if (UserRole.OFFICER.toString().equals(person_role)
                 && (reportReclamation != null)) {
             System.out.println("Подготовка рекламации на отчет");
-
-
+            Service.getInstance().createReportAlternation(selectedReport,
+                    reportReclamationText, login);
         } else {
-            System.out.println("Unknown make report command or user role");
+            System.out.println("Unknown make report command or user's role");
         }
 
         return getURIForRequestPage(request);

@@ -16,7 +16,7 @@ public class ConnectionPoolHolder {
                     ds.setUsername("root");
                     ds.setPassword("root");
                     ds.setMinIdle(5);
-                    ds.setMaxTotal(15);
+                    ds.setMaxTotal(25);
                     ds.setMaxIdle(10);
                     ds.setMaxOpenPreparedStatements(100);
                     dataSource = ds;

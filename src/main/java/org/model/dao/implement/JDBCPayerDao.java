@@ -7,12 +7,53 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
 public class JDBCPayerDao implements PayerDao {
     private Connection connection;
 
     public JDBCPayerDao(Connection connection) {
         this.connection = connection;
+    }
+
+
+    @Override
+    public void createComplaint(Long payerID, Long officerID) {
+        final String query =
+                "insert into replacement_request (creation_time, "
+                + "taxofficer, taxplayer) value (\""
+                + LocalDateTime.now().format(ISO_LOCAL_DATE_TIME)
+                + "\", " + officerID + ", " + payerID
+                + ");";
+        try (Statement st = connection.createStatement()) {
+            if (st.executeUpdate(query)==0) {
+                // TODO SQLException, writing not execute
+                System.out.println("writing to DB not execute");
+            }
+        } catch (SQLException e) {
+            // TODO SQLException
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public boolean isNotComplaintExist(Long payerID, Long officerID) {
+        boolean result = true;
+
+        final String query = "select * from replacement_request "
+                + "where payer = " + payerID + " and officer = "
+                + officerID + ";";
+        try (Statement st = connection.createStatement()) {
+            if (st.executeQuery(query).next()) {
+                result = false;
+            }
+        } catch(SQLException e) {
+            // TODO SQLException
+            e.printStackTrace();
+        }
+        return result;
     }
 
 

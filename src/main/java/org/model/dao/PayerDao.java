@@ -8,4 +8,6 @@ public interface PayerDao extends GenericDao<Payer> {
     void addNewPayer(Payer payer);
     Long getPayerIdByLogin(String payerLogin);
     Long getOfficerIdByPayerID(String payerLogin);
+    boolean isNotComplaintExist(Long payerID, Long officerID);
+    void createComplaint(Long payerID, Long officerID);
 }

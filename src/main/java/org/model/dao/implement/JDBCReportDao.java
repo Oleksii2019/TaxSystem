@@ -19,10 +19,68 @@ public class JDBCReportDao  implements ReportDao {
         this.connection = connection;
     }
 
+    @Override
+    public void setReportAsNotAssessed(Long selectedReportId) {
+        final String query =
+                "update reports set assessed = false "
+                 + "where id = " + selectedReportId + ";";
+        makeUpdate(query);
+    }
 
     @Override
-    public void acceptReport(String selectedReport, Long officerID) {
-        String[] args = selectedReport.split("S");
+    public void setAlternatReportAsAccepted(Long selectedReportId) {
+        final String query =
+                "update report_alteration set accepted = true, "
+                + "accept_time = \""
+                + LocalDateTime.now().format(ISO_LOCAL_DATE_TIME)
+                + "\" where report = " + selectedReportId
+                + " and accepted = false;";
+        makeUpdate(query);
+    }
+
+    @Override
+    public void setPayerReportAsAssessed(Long selectedReportId,
+                                         Long officerID) {
+        final String query =
+                "update reports set assessed = true, "
+                + "taxofficer = " + officerID
+                + " where id = " + selectedReportId + ";";
+        makeUpdate(query);
+//        try (Statement st = connection.createStatement()) {
+//            if (st.executeUpdate(query) == 0) {
+//                // TODO SQLException, writing not execute
+//                System.out.println("updating DB not execute");
+//            }
+//        } catch (SQLException e) {
+//            // TODO SQLException
+//            e.printStackTrace();
+//        }
+    }
+
+    @Override
+    public void createReportAlternation(Long selectedReportId,
+                                     String reportReclamation) {
+        final String query =
+                "insert into report_alteration (accept_time, accepted, "
+                + "creation_time, note, report) value (null, "
+                + "false, \""
+                + LocalDateTime.now().format(ISO_LOCAL_DATE_TIME)
+                + "\", \"" + reportReclamation + "\", "
+                + selectedReportId + ");";
+        makeUpdate(query);
+//        try (Statement st = connection.createStatement()) {
+//            if (st.executeUpdate(query) == 0) {
+//                // TODO SQLException, writing not execute
+//                System.out.println("writing to DB not execute");
+//            }
+//        } catch (SQLException e) {
+//            // TODO SQLException
+//            e.printStackTrace();
+//        }
+    }
+
+    @Override
+    public void acceptReport(Long selectedReportId, Long officerID) {
 
         final String query =
                 "update reports set accepted = true, assessed = true, "
@@ -30,46 +88,43 @@ public class JDBCReportDao  implements ReportDao {
                 + LocalDateTime.now().format(ISO_LOCAL_DATE_TIME)
 //                        LocalDateTime.now().format(DateTimeFormatter
 //                        .ofPattern(DATE_TIME_FORMAT_PATTERN))
-                + "\" where taxpayer = " + Integer.valueOf(args[0])
-                + " and creation_time = \""
-                + stringToLocalDateTime(args[1]) + "\";";
-        try (Statement st = connection.createStatement()) {
-            if (st.executeUpdate(query) == 0) {
-                // TODO SQLException, writing not execute
-                System.out.println("updating DB not execute");
-            }
-        } catch (SQLException e) {
-            // TODO SQLException
-            e.printStackTrace();
-        }
+                + "\" where id = " + selectedReportId + ";";
+        makeUpdate(query);
+//        try (Statement st = connection.createStatement()) {
+//            if (st.executeUpdate(query) == 0) {
+//                // TODO SQLException, writing not execute
+//                System.out.println("updating DB not execute");
+//            }
+//        } catch (SQLException e) {
+//            // TODO SQLException
+//            e.printStackTrace();
+//        }
     }
 
     @Override
     public void addNewReport(Long payerID, Long officerID) {
 
-//        insert into reports (accept_time, accepted, assessed, creation_time, taxpayer,
-//        taxofficer) value (null, false, false, now(), 4, null); ISO_LOCAL_DATE_TIME
-
 //        + LocalDateTime.now().format(DateTimeFormatter
 //                .ofPattern(DATE_TIME_FORMAT_PATTERN))
 
 //         LocalDateTime.now().format(ISO_LOCAL_DATE_TIME)
-// TODO taxofficer не должен быть нулевым для совместимости БД
+
         final String query =
                 "insert into reports (accept_time, accepted, assessed, "
                 + "creation_time, taxpayer, taxofficer) value (null, "
                 + "false, false, \""
                 + LocalDateTime.now().format(ISO_LOCAL_DATE_TIME)
                 + "\", " + payerID + ", " + officerID + ");";
-        try (Statement st = connection.createStatement()) {
-            if (st.executeUpdate(query) == 0) {
-                // TODO SQLException, writing not execute
-                System.out.println("writing to DB not execute");
-            }
-        } catch (SQLException e) {
-            // TODO SQLException
-            e.printStackTrace();
-        }
+        makeUpdate(query);
+//        try (Statement st = connection.createStatement()) {
+//            if (st.executeUpdate(query) == 0) {
+//                // TODO SQLException, writing not execute
+//                System.out.println("writing to DB not execute");
+//            }
+//        } catch (SQLException e) {
+//            // TODO SQLException
+//            e.printStackTrace();
+//        }
     }
 
 
@@ -80,12 +135,13 @@ public class JDBCReportDao  implements ReportDao {
                 "select reports.*, taxpayers.name, "
                 + "report_alteration.note from reports "
                 + "join taxpayers on reports.taxpayer = taxpayers.id "
-                + "join taxofficers on reports.taxofficer = taxofficers.id or "
-                + "taxofficers.id = taxpayers.taxofficer "
+                + "join taxofficers on reports.taxofficer = taxofficers.id "
+                + "or taxofficers.id = taxpayers.taxofficer "
                 + "left join report_alteration on report_alteration.report "
                 + "= reports.id and report_alteration.accepted = false "
                 + "where taxofficers.login = \"" + login
-                + "\" and reports.accepted = false;"
+                + "\" and reports.assessed = false and reports.accepted = "
+                + "false;"
         );
     }
 
@@ -93,12 +149,14 @@ public class JDBCReportDao  implements ReportDao {
     public List<Report> getNotAcceptedReportsForPayerLogin(String login) {
 
         return loadDataWithConnection(
-                "select reports.*, taxpayers.name, report_alteration.note from reports "
+                "select reports.*, taxpayers.name, "
+                + "report_alteration.note from reports "
 //              + "join taxofficers on reports.taxofficer = taxofficers.id "
                 + "join taxpayers on reports.taxpayer = taxpayers.id "
-                + "left join report_alteration on  report_alteration.report = reports.id "
-                + "and report_alteration.accepted = false "
-                + "where taxpayers.login = \"" + login + "\" and reports.accepted=false;"
+                + "left join report_alteration on report_alteration.report "
+                + "= reports.id and report_alteration.accepted = false "
+                + "where taxpayers.login = \"" + login + "\" and "
+                + "reports.accepted = false;"
         );
     }
 
@@ -108,6 +166,7 @@ public class JDBCReportDao  implements ReportDao {
             ResultSet rs = st.executeQuery(query);
             while (rs.next()) {
                 rl.add(Report.builder()
+                        .setId(rs.getLong("id"))
                         .setAccepted(rs.getBoolean("accepted"))
                         .setAssessed(rs.getBoolean("assessed"))
                         .setCreationTime(rs.getString("creation_time"))
@@ -144,6 +203,18 @@ public class JDBCReportDao  implements ReportDao {
         } else {
             return LocalDateTime.parse(dateTime, DateTimeFormatter
                     .ofPattern(DATE_TIME_FORMAT_PATTERN));
+        }
+    }
+
+    public void makeUpdate(String query) {
+        try (Statement st = connection.createStatement()) {
+            if (st.executeUpdate(query) == 0) {
+                // TODO SQLException, writing not execute
+                System.out.println("writing to DB not execute");
+            }
+        } catch (SQLException e) {
+            // TODO SQLException
+            e.printStackTrace();
         }
     }
 

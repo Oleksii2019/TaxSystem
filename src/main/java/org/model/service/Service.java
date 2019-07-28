@@ -9,6 +9,7 @@ import org.model.entity.Report;
 import java.util.List;
 
 import static org.model.service.ServiceUtil.createPayerWithForm;
+import static org.model.service.ServiceUtil.getSelectedReportId;
 
 public class Service {
     private static ReportDao reportDao;
@@ -100,7 +101,41 @@ public class Service {
         if (officerDao == null) {
             officerDao = DaoFactory.getInstance().createOfficerDao();
         }
-        reportDao.acceptReport(selectedReport, officerDao.getOfficerIdByLogin(login));
+        reportDao.acceptReport(getSelectedReportId(report, selectedReport),
+                officerDao.getOfficerIdByLogin(login));
+    }
+
+    public void createReportAlternation(String selectedReport,
+                                        String reportReclamation,
+                                        String login) {
+        Long reportID = getSelectedReportId(report, selectedReport);
+        if (reportDao == null) {
+            reportDao = DaoFactory.getInstance().createReportDao();
+        }
+        if (officerDao == null) {
+            officerDao = DaoFactory.getInstance().createOfficerDao();
+        }
+        reportDao.createReportAlternation(reportID, reportReclamation);
+        reportDao.setPayerReportAsAssessed(reportID,
+                officerDao.getOfficerIdByLogin(login));
+    }
+
+    public void editReportByPayer(String selectedReport) {
+        Long reportID = getSelectedReportId(report, selectedReport);
+        if (reportDao == null) {
+            reportDao = DaoFactory.getInstance().createReportDao();
+        }
+        reportDao.setReportAsNotAssessed(reportID);
+        reportDao.setAlternatReportAsAccepted(reportID);
+    }
+
+    public void createComplaint(String payerLogin) {
+
+        Long payerID = payerDao.getOfficerIdByPayerID(payerLogin);
+        Long officerID = payerDao.getPayerIdByLogin(payerLogin);
+        if (payerDao.isNotComplaintExist(payerID, officerID)) {
+            payerDao.createComplaint(payerID, officerID);
+        }
     }
 
 }

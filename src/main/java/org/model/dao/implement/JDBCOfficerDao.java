@@ -15,11 +15,11 @@ public class JDBCOfficerDao implements OfficerDao {
     }
 
     @Override
-    public Long getOfficerIdByLogin(String payerLogin) {
+    public Long getOfficerIdByLogin(String officerLogin) {
         Long res = 0L;
         final String query =
                 "select id from taxofficers where login = \""
-                        + payerLogin + "\";";
+                        + officerLogin + "\";";
         try (Statement st = connection.createStatement()) {
             ResultSet rs = st.executeQuery(query);
             while (rs.next()) {
