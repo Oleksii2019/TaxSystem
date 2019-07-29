@@ -4,12 +4,11 @@ import org.model.dao.PayerDao;
 import org.model.entity.Payer;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDateTime;
 
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+import static org.model.dao.implement.JDBCUtil.*;
 
 public class JDBCPayerDao implements PayerDao {
     private Connection connection;
@@ -18,138 +17,69 @@ public class JDBCPayerDao implements PayerDao {
         this.connection = connection;
     }
 
-
     @Override
     public void createComplaint(Long payerID, Long officerID) {
-        final String query =
-                "insert into replacement_request (creation_time, "
-                + "taxofficer, taxplayer) value (\""
+        insertRow("insert into replacement_request (creation_time, "
+                + "taxofficer, taxpayer) value (\""
                 + LocalDateTime.now().format(ISO_LOCAL_DATE_TIME)
                 + "\", " + officerID + ", " + payerID
-                + ");";
-        try (Statement st = connection.createStatement()) {
-            if (st.executeUpdate(query)==0) {
-                // TODO SQLException, writing not execute
-                System.out.println("writing to DB not execute");
-            }
-        } catch (SQLException e) {
-            // TODO SQLException
-            e.printStackTrace();
-        }
+                + ");",
+                connection
+        );
     }
 
     @Override
     public boolean isNotComplaintExist(Long payerID, Long officerID) {
-        boolean result = true;
-
-        final String query = "select * from replacement_request "
-                + "where payer = " + payerID + " and officer = "
-                + officerID + ";";
-        try (Statement st = connection.createStatement()) {
-            if (st.executeQuery(query).next()) {
-                result = false;
-            }
-        } catch(SQLException e) {
-            // TODO SQLException
-            e.printStackTrace();
-        }
-        return result;
+        return checkNotMatch("select * from replacement_request "
+                + "where taxpayer = " + payerID + " and taxofficer = "
+                + officerID + ";",
+                connection
+        );
     }
-
 
     @Override
     public Long getOfficerIdByPayerID(String payerLogin) {
-        Long res = 0L;
-        final String query =
+        return getLong(
                 "select taxofficer from taxpayers where login = \""
-                        + payerLogin + "\";";
-        try (Statement st = connection.createStatement()) {
-            ResultSet rs = st.executeQuery(query);
-            while (rs.next()) {
-                res = rs.getLong("taxofficer");
-            }
-        } catch (SQLException e) {
-            // TODO SQLException
-            e.printStackTrace();
-        }
-        return res;
+                        + payerLogin + "\";", "taxofficer",
+                connection
+        );
     }
-
 
     @Override
     public Long getPayerIdByLogin(String payerLogin) {
-        Long res = 0L;
-        final String query =
-                "select id from taxpayers where login = \""
-                + payerLogin + "\";";
-        try (Statement st = connection.createStatement()) {
-            ResultSet rs = st.executeQuery(query);
-            while (rs.next()) {
-                res = rs.getLong("id");
-            }
-        } catch (SQLException e) {
-            // TODO SQLException
-            e.printStackTrace();
-        }
-        return res;
+        return getLong("select id from taxpayers where login = \""
+                        + payerLogin + "\";", "id",
+                connection
+        );
     }
 
     @Override
     public void addNewPayer(Payer payer) {
-//       insert into taxpayers (login, name, password, role, taxofficer)
-//       value ("Nike3", "Nike3 Payer", "22", 1, 2);
-
-        final String query =
-                "insert into taxpayers (login, name, password, role, "
-                        + "taxofficer) value (\"" + payer.getLogin() + "\", \""
-                        + payer.getName() + "\", \"" + payer.getPassword()
-                        + "\", " + payer.getRole() + ", "
-                        + payer.getOfficerID() + ");";
-        try (Statement st = connection.createStatement()) {
-            if (st.executeUpdate(query)==0) {
-                // TODO SQLException, writing not execute
-                System.out.println("writing to DB not execute");
-            }
-        } catch (SQLException e) {
-            // TODO SQLException
-            e.printStackTrace();
-        }
+        insertRow("insert into taxpayers (login, name, password, role, "
+                  + "taxofficer) value (\"" + payer.getLogin() + "\", \""
+                  + payer.getName() + "\", \"" + payer.getPassword()
+                  + "\", " + payer.getRole() + ", "
+                  + payer.getOfficerID() + ");",
+                connection
+        );
     }
-
 
     @Override
     public boolean matchForLoginAndPassword(String login, String password) {
-        boolean result = false;
-
-        final String query = "select * from taxpayers where login = "
+        return checkMatch("select * from taxpayers where login = "
                 + "\"" + login + "\"" + " and password = "
-                + "\"" + password + "\"";
-        try (Statement st = connection.createStatement()) {
-            if (st.executeQuery(query).next()) {
-                result = true;
-            }
-        } catch(SQLException e) {
-            // TODO SQLException
-            e.printStackTrace();
-        }
-        return result;
+                + "\"" + password + "\"",
+                connection
+        );
     }
 
     @Override
     public boolean notMatchForLogin(String login) {
-        boolean result = true;
-
-        final String query = "select * from taxpayers where login = "
-                + "\"" + login + "\"";
-        try (Statement st = connection.createStatement()) {
-            if (st.executeQuery(query).next()) {
-                result = false;
-            }
-        } catch(SQLException e) {
-            // TODO SQLException
-            e.printStackTrace();
-        }
-        return result;
+        return checkNotMatch("select * from taxpayers where login = "
+                + "\"" + login + "\"",
+                connection
+        );
     }
 
     @Override

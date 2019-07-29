@@ -131,8 +131,8 @@ public class Service {
 
     public void createComplaint(String payerLogin) {
 
-        Long payerID = payerDao.getOfficerIdByPayerID(payerLogin);
-        Long officerID = payerDao.getPayerIdByLogin(payerLogin);
+        Long officerID = payerDao.getOfficerIdByPayerID(payerLogin);
+        Long  payerID = payerDao.getPayerIdByLogin(payerLogin);
         if (payerDao.isNotComplaintExist(payerID, officerID)) {
             payerDao.createComplaint(payerID, officerID);
         }

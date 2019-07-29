@@ -3,7 +3,10 @@ package org.model.dao.implement;
 import org.model.dao.ReportDao;
 import org.model.entity.Report;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -11,6 +14,7 @@ import java.util.List;
 
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 import static org.Constants.DATE_TIME_FORMAT_PATTERN;
+import static org.model.dao.implement.JDBCUtil.makeUpdate;
 
 public class JDBCReportDao  implements ReportDao {
     private Connection connection;
@@ -21,84 +25,59 @@ public class JDBCReportDao  implements ReportDao {
 
     @Override
     public void setReportAsNotAssessed(Long selectedReportId) {
-        final String query =
+        makeUpdate(
                 "update reports set assessed = false "
-                 + "where id = " + selectedReportId + ";";
-        makeUpdate(query);
+                        + "where id = " + selectedReportId + ";",
+                connection
+        );
     }
 
     @Override
     public void setAlternatReportAsAccepted(Long selectedReportId) {
-        final String query =
+        makeUpdate(
                 "update report_alteration set accepted = true, "
-                + "accept_time = \""
-                + LocalDateTime.now().format(ISO_LOCAL_DATE_TIME)
-                + "\" where report = " + selectedReportId
-                + " and accepted = false;";
-        makeUpdate(query);
+                        + "accept_time = \""
+                        + LocalDateTime.now().format(ISO_LOCAL_DATE_TIME)
+                        + "\" where report = " + selectedReportId
+                        + " and accepted = false;",
+                connection
+        );
     }
 
     @Override
     public void setPayerReportAsAssessed(Long selectedReportId,
                                          Long officerID) {
-        final String query =
+        makeUpdate(
                 "update reports set assessed = true, "
-                + "taxofficer = " + officerID
-                + " where id = " + selectedReportId + ";";
-        makeUpdate(query);
-//        try (Statement st = connection.createStatement()) {
-//            if (st.executeUpdate(query) == 0) {
-//                // TODO SQLException, writing not execute
-//                System.out.println("updating DB not execute");
-//            }
-//        } catch (SQLException e) {
-//            // TODO SQLException
-//            e.printStackTrace();
-//        }
+                        + "taxofficer = " + officerID
+                        + " where id = " + selectedReportId + ";",
+                connection
+        );
     }
 
     @Override
     public void createReportAlternation(Long selectedReportId,
                                      String reportReclamation) {
-        final String query =
+        makeUpdate(
                 "insert into report_alteration (accept_time, accepted, "
                 + "creation_time, note, report) value (null, "
                 + "false, \""
                 + LocalDateTime.now().format(ISO_LOCAL_DATE_TIME)
                 + "\", \"" + reportReclamation + "\", "
-                + selectedReportId + ");";
-        makeUpdate(query);
-//        try (Statement st = connection.createStatement()) {
-//            if (st.executeUpdate(query) == 0) {
-//                // TODO SQLException, writing not execute
-//                System.out.println("writing to DB not execute");
-//            }
-//        } catch (SQLException e) {
-//            // TODO SQLException
-//            e.printStackTrace();
-//        }
+                + selectedReportId + ");",
+                connection
+        );
     }
 
     @Override
     public void acceptReport(Long selectedReportId, Long officerID) {
-
-        final String query =
+        makeUpdate(
                 "update reports set accepted = true, assessed = true, "
                 + "taxofficer = " + officerID + ", accept_time = \""
                 + LocalDateTime.now().format(ISO_LOCAL_DATE_TIME)
-//                        LocalDateTime.now().format(DateTimeFormatter
-//                        .ofPattern(DATE_TIME_FORMAT_PATTERN))
-                + "\" where id = " + selectedReportId + ";";
-        makeUpdate(query);
-//        try (Statement st = connection.createStatement()) {
-//            if (st.executeUpdate(query) == 0) {
-//                // TODO SQLException, writing not execute
-//                System.out.println("updating DB not execute");
-//            }
-//        } catch (SQLException e) {
-//            // TODO SQLException
-//            e.printStackTrace();
-//        }
+                + "\" where id = " + selectedReportId + ";",
+                connection
+        );
     }
 
     @Override
@@ -109,22 +88,14 @@ public class JDBCReportDao  implements ReportDao {
 
 //         LocalDateTime.now().format(ISO_LOCAL_DATE_TIME)
 
-        final String query =
+        makeUpdate(
                 "insert into reports (accept_time, accepted, assessed, "
                 + "creation_time, taxpayer, taxofficer) value (null, "
                 + "false, false, \""
                 + LocalDateTime.now().format(ISO_LOCAL_DATE_TIME)
-                + "\", " + payerID + ", " + officerID + ");";
-        makeUpdate(query);
-//        try (Statement st = connection.createStatement()) {
-//            if (st.executeUpdate(query) == 0) {
-//                // TODO SQLException, writing not execute
-//                System.out.println("writing to DB not execute");
-//            }
-//        } catch (SQLException e) {
-//            // TODO SQLException
-//            e.printStackTrace();
-//        }
+                + "\", " + payerID + ", " + officerID + ");",
+                connection
+        );
     }
 
 
@@ -195,7 +166,6 @@ public class JDBCReportDao  implements ReportDao {
         }
     }
 
-
     // Метод преобразует время, полученное из БД как строка, в формат, к-ый использовался в БД при записи
     public LocalDateTime stringToLocalDateTime(String dateTime) {
         if (dateTime == null) {
@@ -203,18 +173,6 @@ public class JDBCReportDao  implements ReportDao {
         } else {
             return LocalDateTime.parse(dateTime, DateTimeFormatter
                     .ofPattern(DATE_TIME_FORMAT_PATTERN));
-        }
-    }
-
-    public void makeUpdate(String query) {
-        try (Statement st = connection.createStatement()) {
-            if (st.executeUpdate(query) == 0) {
-                // TODO SQLException, writing not execute
-                System.out.println("writing to DB not execute");
-            }
-        } catch (SQLException e) {
-            // TODO SQLException
-            e.printStackTrace();
         }
     }
 
