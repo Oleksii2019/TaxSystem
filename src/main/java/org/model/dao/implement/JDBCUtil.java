@@ -33,18 +33,6 @@ public class JDBCUtil {
         return result;
     }
 
-    public static void insertRow(String query, Connection connection) {
-        try (Statement st = connection.createStatement()) {
-            if (st.executeUpdate(query)==0) {
-                // TODO SQLException, writing not execute
-                System.out.println("writing to DB not execute");
-            }
-        } catch (SQLException e) {
-            // TODO SQLException
-            e.printStackTrace();
-        }
-    }
-
     public static Long getLong(String query, String fieldName,
                                Connection connection) {
         Long res = 0L;
@@ -62,14 +50,38 @@ public class JDBCUtil {
 
     public static void makeUpdate(String query, Connection connection) {
         try (Statement st = connection.createStatement()) {
-            if (st.executeUpdate(query) == 0) {
-                // TODO SQLException, writing not execute
-                System.out.println("writing to DB not execute");
-            }
+            st.executeUpdate(query);
         } catch (SQLException e) {
             // TODO SQLException
             e.printStackTrace();
         }
     }
+
+//    public static void insertRow(String query, Connection connection) {
+//        try (Statement st = connection.createStatement()) {
+//            st.executeUpdate(query);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+
+
+    public static void makeTransactionUpdate(String[] queries,
+            Connection connection) {
+        try (Statement st = connection.createStatement()) {
+            connection.setAutoCommit(false);
+            for (String query : queries) {
+                st.executeUpdate(query);
+            }
+            connection.commit();
+            connection.setAutoCommit(true);
+        } catch (SQLException e) {
+            // TODO SQLException
+            e.printStackTrace();
+        }
+    }
+
+
 
 }

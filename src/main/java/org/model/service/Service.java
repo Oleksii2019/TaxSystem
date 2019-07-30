@@ -115,8 +115,10 @@ public class Service {
         if (officerDao == null) {
             officerDao = DaoFactory.getInstance().createOfficerDao();
         }
-        reportDao.createReportAlternation(reportID, reportReclamation);
-        reportDao.setPayerReportAsAssessed(reportID,
+
+        // Трансакция
+        reportDao.createReportAlternation(reportID,
+                reportReclamation,
                 officerDao.getOfficerIdByLogin(login));
     }
 
@@ -125,8 +127,8 @@ public class Service {
         if (reportDao == null) {
             reportDao = DaoFactory.getInstance().createReportDao();
         }
+        // Трансакция
         reportDao.setReportAsNotAssessed(reportID);
-        reportDao.setAlternatReportAsAccepted(reportID);
     }
 
     public void createComplaint(String payerLogin) {

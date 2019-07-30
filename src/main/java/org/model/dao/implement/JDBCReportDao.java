@@ -14,6 +14,7 @@ import java.util.List;
 
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 import static org.Constants.DATE_TIME_FORMAT_PATTERN;
+import static org.model.dao.implement.JDBCUtil.makeTransactionUpdate;
 import static org.model.dao.implement.JDBCUtil.makeUpdate;
 
 public class JDBCReportDao  implements ReportDao {
@@ -25,48 +26,34 @@ public class JDBCReportDao  implements ReportDao {
 
     @Override
     public void setReportAsNotAssessed(Long selectedReportId) {
-        makeUpdate(
+        String[] queries = {
                 "update reports set assessed = false "
                         + "where id = " + selectedReportId + ";",
-                connection
-        );
-    }
-
-    @Override
-    public void setAlternatReportAsAccepted(Long selectedReportId) {
-        makeUpdate(
                 "update report_alteration set accepted = true, "
                         + "accept_time = \""
                         + LocalDateTime.now().format(ISO_LOCAL_DATE_TIME)
                         + "\" where report = " + selectedReportId
-                        + " and accepted = false;",
-                connection
-        );
-    }
-
-    @Override
-    public void setPayerReportAsAssessed(Long selectedReportId,
-                                         Long officerID) {
-        makeUpdate(
-                "update reports set assessed = true, "
-                        + "taxofficer = " + officerID
-                        + " where id = " + selectedReportId + ";",
-                connection
-        );
+                        + " and accepted = false;"
+        };
+        makeTransactionUpdate(queries, connection);
     }
 
     @Override
     public void createReportAlternation(Long selectedReportId,
-                                     String reportReclamation) {
-        makeUpdate(
+                                        String reportReclamation,
+                                        Long officerID) {
+        String[] queries = {
                 "insert into report_alteration (accept_time, accepted, "
-                + "creation_time, note, report) value (null, "
-                + "false, \""
-                + LocalDateTime.now().format(ISO_LOCAL_DATE_TIME)
-                + "\", \"" + reportReclamation + "\", "
-                + selectedReportId + ");",
-                connection
-        );
+                        + "creation_time, note, report) value (null, "
+                        + "false, \""
+                        + LocalDateTime.now().format(ISO_LOCAL_DATE_TIME)
+                        + "\", \"" + reportReclamation + "\", "
+                        + selectedReportId + ");",
+                "update reports set assessed = true, "
+                        + "taxofficer = " + officerID
+                        + " where id = " + selectedReportId + ";"
+        };
+        makeTransactionUpdate(queries, connection);
     }
 
     @Override

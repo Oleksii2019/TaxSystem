@@ -1,14 +1,16 @@
 package org.model.dao.implement;
 
+import org.model.dao.DaoFactory;
 import org.model.dao.PayerDao;
 import org.model.entity.Payer;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-import static org.model.dao.implement.JDBCUtil.*;
 
 public class JDBCPayerDao implements PayerDao {
     private Connection connection;
@@ -19,67 +21,116 @@ public class JDBCPayerDao implements PayerDao {
 
     @Override
     public void createComplaint(Long payerID, Long officerID) {
-        insertRow("insert into replacement_request (creation_time, "
-                + "taxofficer, taxpayer) value (\""
-                + LocalDateTime.now().format(ISO_LOCAL_DATE_TIME)
-                + "\", " + officerID + ", " + payerID
-                + ");",
-                connection
-        );
+        try (PreparedStatement ps = connection.prepareStatement(
+                DaoFactory.getQuery("create.complaint"))) {
+            ps.setString(1, LocalDateTime.now().format(ISO_LOCAL_DATE_TIME));
+            ps.setLong(2, officerID);
+            ps.setLong(3, payerID);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            // TODO SQLException
+            e.printStackTrace();
+        }
     }
 
     @Override
     public boolean isNotComplaintExist(Long payerID, Long officerID) {
-        return checkNotMatch("select * from replacement_request "
-                + "where taxpayer = " + payerID + " and taxofficer = "
-                + officerID + ";",
-                connection
-        );
+        boolean result = true;
+        try (PreparedStatement ps = connection.prepareStatement(
+                DaoFactory.getQuery("is.not.complaint.exist"))) {
+            ps.setLong(1, payerID);
+            ps.setLong(2, officerID);
+            if (ps.executeQuery().next()) {
+                result = false;
+            }
+        } catch(SQLException e) {
+            // TODO SQLException
+            e.printStackTrace();
+        }
+        return result;
     }
 
     @Override
     public Long getOfficerIdByPayerID(String payerLogin) {
-        return getLong(
-                "select taxofficer from taxpayers where login = \""
-                        + payerLogin + "\";", "taxofficer",
-                connection
-        );
+        long res = 0L;
+        try (PreparedStatement ps = connection.prepareStatement(
+                DaoFactory.getQuery("get.officer.id.by.payer.login"))) {
+            ps.setString(1, payerLogin);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                res = rs.getLong("taxofficer");
+            }
+        } catch (SQLException e) {
+            // TODO SQLException
+            e.printStackTrace();
+        }
+        return res;
     }
 
     @Override
     public Long getPayerIdByLogin(String payerLogin) {
-        return getLong("select id from taxpayers where login = \""
-                        + payerLogin + "\";", "id",
-                connection
-        );
+        long res = 0L;
+        try (PreparedStatement ps = connection.prepareStatement(
+                DaoFactory.getQuery("get.payer.id.by.login"))) {
+            ps.setString(1, payerLogin);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                res = rs.getLong("id");
+            }
+        } catch (SQLException e) {
+            // TODO SQLException
+            e.printStackTrace();
+        }
+        return res;
     }
 
     @Override
     public void addNewPayer(Payer payer) {
-        insertRow("insert into taxpayers (login, name, password, role, "
-                  + "taxofficer) value (\"" + payer.getLogin() + "\", \""
-                  + payer.getName() + "\", \"" + payer.getPassword()
-                  + "\", " + payer.getRole() + ", "
-                  + payer.getOfficerID() + ");",
-                connection
-        );
+        try (PreparedStatement ps = connection.prepareStatement(
+                DaoFactory.getQuery("add.new.payer"))) {
+            ps.setString(1, payer.getLogin());
+            ps.setString(2, payer.getName());
+            ps.setString(3, payer.getPassword());
+            ps.setInt(4, payer.getRole());
+            ps.setLong(5, payer.getOfficerID());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            // TODO SQLException
+            e.printStackTrace();
+        }
     }
 
     @Override
     public boolean matchForLoginAndPassword(String login, String password) {
-        return checkMatch("select * from taxpayers where login = "
-                + "\"" + login + "\"" + " and password = "
-                + "\"" + password + "\"",
-                connection
-        );
+        boolean result = false;
+        try (PreparedStatement ps = connection.prepareStatement(
+                DaoFactory.getQuery("match.for.payer.login.and.password"))) {
+            ps.setString(1, login);
+            ps.setString(2, password);
+            if (ps.executeQuery().next()) {
+                result = true;
+            }
+        } catch(SQLException e) {
+            // TODO SQLException
+            e.printStackTrace();
+        }
+        return result;
     }
 
     @Override
     public boolean notMatchForLogin(String login) {
-        return checkNotMatch("select * from taxpayers where login = "
-                + "\"" + login + "\"",
-                connection
-        );
+        boolean result = true;
+        try (PreparedStatement ps = connection.prepareStatement(
+                DaoFactory.getQuery("not.match.for.payer.login"))) {
+            ps.setString(1, login);
+            if (ps.executeQuery().next()) {
+                result = false;
+            }
+        } catch(SQLException e) {
+            // TODO SQLException
+            e.printStackTrace();
+        }
+        return result;
     }
 
     @Override

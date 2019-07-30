@@ -10,8 +10,7 @@ public interface ReportDao extends GenericDao<Report>  {
     void addNewReport(Long payerID, Long officerID);
     void acceptReport(Long selectedReportId, Long officerID);
     void createReportAlternation(Long selectedReportId,
-                              String reportReclamation);
-    void setPayerReportAsAssessed(Long selectedReportId, Long officerID);
+                                 String reportReclamation,
+                                 Long officerID);
     void setReportAsNotAssessed(Long selectedReportId);
-    void setAlternatReportAsAccepted(Long selectedReportId);
 }
