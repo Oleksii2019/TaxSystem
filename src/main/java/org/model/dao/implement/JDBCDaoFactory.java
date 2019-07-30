@@ -29,17 +29,9 @@ public class JDBCDaoFactory extends DaoFactory {
 
     private Connection getConnection(){
         try {
-//            Connection conn = dataSource.getConnection();
-//            conn.getTransactionIsolation();
-//            conn.setTransactionIsolation();
-//            Connection.TRANSACTION_READ_UNCOMMITTED; // 1
-//            Connection.TRANSACTION_READ_COMMITTED; //2
-//            Connection.TRANSACTION_REPEATABLE_READ; // 4 default
-//            Connection.TRANSACTION_SERIALIZABLE; //8
             return dataSource.getConnection();
         } catch (SQLException e) {
-            // TODO SQLException
-            System.out.println(e + " - нет подключения к БД");
+            System.out.println(e);
             throw new RuntimeException(e);
         }
     }

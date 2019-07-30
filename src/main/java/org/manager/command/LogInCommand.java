@@ -41,7 +41,6 @@ public class LogInCommand implements Command {
         }
     }
 
-
     private void UserRegistrationInApp(HttpServletRequest request,
                                        String login,
                                        String userRole) {

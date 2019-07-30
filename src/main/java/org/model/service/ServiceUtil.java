@@ -22,7 +22,7 @@ public class ServiceUtil {
 
     public static Long getSelectedReportId(List<Report> report,
                                            String selectedReport) {
-        String[] args = selectedReport.split("S");
+        String[] args = selectedReport.split(DATA_TIME_SEPARATOR);
         return report.stream()
                 .filter(e->e.getPayerID().equals(Long.valueOf(args[0]))
                         && e.getCreationTime().equals(args[1]))

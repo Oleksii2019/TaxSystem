@@ -26,7 +26,6 @@ public class JDBCOfficerDao implements OfficerDao {
                 res = rs.getLong("id");
             }
         } catch (SQLException e) {
-            // TODO SQLException
             e.printStackTrace();
         }
         return res;
@@ -43,7 +42,6 @@ public class JDBCOfficerDao implements OfficerDao {
                 result = true;
             }
         } catch(SQLException e) {
-            // TODO SQLException
             e.printStackTrace();
         }
         return result;
@@ -54,8 +52,7 @@ public class JDBCOfficerDao implements OfficerDao {
         try {
             connection.close();
         } catch(SQLException e) {
-            // TODO SQLException
-            throw new RuntimeException(e + " - ошибка отключения БД");
+            throw new RuntimeException(e);
         }
     }
 

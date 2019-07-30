@@ -1,7 +1,6 @@
 package org;
 
 public enum TableOfURI {
-    // TODO не забудь перепроверить команды
     ROOI("/", "index.jsp", true, false, false),
     HOME( "/tax_system/home", "/WEB-INF/jsp/home.jsp", true, false, false),
     NPERSON_LOGIN("/tax_system/person-login","/WEB-INF/jsp/payer/nperson_login_form.jsp", true, false, false),

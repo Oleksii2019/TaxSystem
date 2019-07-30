@@ -27,26 +27,17 @@ public class Servlet extends HttpServlet {
 
         Set<String> hSet = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
         servletConfig.getServletContext().setAttribute(LOGGED_USERS_PARAMETER, hSet);
-
-        //        servletConfig.getServletContext()
-//                .setAttribute(LOGGED_USERS_PARAMETER, new HashSet<String>());
-
-//        commands.put("logout",
-//                new LogOutCommand());
         commands.put(LOGIN_COMMAND, new LogInCommand());
         commands.put(LOGOUT_COMMAND, new LogOutCommand());
         commands.put(REGISTRATION_COMMAND, new RegistrationCommand());
         commands.put(MAKE_REPORT_COMMAND, new MakeReportCommand());
-
     }
 
     @Override
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response)
             throws IOException, ServletException {
-        System.out.println("get go");
         processRequest(request, response);
-        //response.getWriter().print("Hello from servlet");
     }
 
     @Override
@@ -59,22 +50,16 @@ public class Servlet extends HttpServlet {
             throws ServletException, IOException {
         Command command;
         String path = request.getRequestURI();
-
-        if (request.getAttribute("logout") == null) {
+        if (request.getAttribute(LOGOUT_COMMAND) == null) {
             command = commands.getOrDefault(
                     path.substring(path.lastIndexOf(SEPARATOR) + 1),
-                    (r)->TableOfURI.HOME.getPagePath()); //"/WEB-INF/jsp/home.jsp" - for forward()
-        } else { // Принудительный logout
+                    (r)->TableOfURI.HOME.getPagePath());
+        } else {
             request.removeAttribute(LOGOUT_COMMAND);
-            command = commands.get(LOGOUT_COMMAND); //.getOrDefault("logout", (r)->"/tax_system/home");
+            command = commands.get(LOGOUT_COMMAND);
         }
-
         System.out.println(command.getClass().getName());
-//        String page = command.execute(request);
-//        String str = path.replaceAll(path.substring(path.lastIndexOf(SEPARATOR)), "");
-        String str = command.execute(request);
-        response.sendRedirect(str);  // "/tax_system/home"
-        //request.getRequestDispatcher(page).forward(request,response);
+        response.sendRedirect(command.execute(request));
     }
 
 }

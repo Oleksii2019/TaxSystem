@@ -33,11 +33,6 @@ public class Internalization implements Filter {
             session.setAttribute(LANGUAGE_PARAMETER, reqLanguage);
         }
 
-//        if (req.getParameter("cookieLocale") != null) {
-//            Cookie cookie = new Cookie("lang", req.getParameter("cookieLocale"));
-//            res.addCookie(cookie);
-//        }
-
         filterChain.doFilter(servletRequest,servletResponse);
     }
 

@@ -15,7 +15,6 @@ public class RegistrationCommand implements Command {
         String login = request.getParameter(LOGIN_PARAMETER);
         String password = request.getParameter(PASSWORD_PARAMETER);
         String regName = request.getParameter(REG_NAME_PARAMETER);
-//        String person_role = request.getParameter(USER_ROLE_PARAMETER);
         setInputMistakeSign(request);
 
         if ((login == null) || login.isEmpty()

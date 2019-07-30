@@ -28,7 +28,6 @@ public class JDBCPayerDao implements PayerDao {
             ps.setLong(3, payerID);
             ps.executeUpdate();
         } catch (SQLException e) {
-            // TODO SQLException
             e.printStackTrace();
         }
     }
@@ -44,7 +43,6 @@ public class JDBCPayerDao implements PayerDao {
                 result = false;
             }
         } catch(SQLException e) {
-            // TODO SQLException
             e.printStackTrace();
         }
         return result;
@@ -61,7 +59,6 @@ public class JDBCPayerDao implements PayerDao {
                 res = rs.getLong("taxofficer");
             }
         } catch (SQLException e) {
-            // TODO SQLException
             e.printStackTrace();
         }
         return res;
@@ -78,7 +75,6 @@ public class JDBCPayerDao implements PayerDao {
                 res = rs.getLong("id");
             }
         } catch (SQLException e) {
-            // TODO SQLException
             e.printStackTrace();
         }
         return res;
@@ -95,7 +91,6 @@ public class JDBCPayerDao implements PayerDao {
             ps.setLong(5, payer.getOfficerID());
             ps.executeUpdate();
         } catch (SQLException e) {
-            // TODO SQLException
             e.printStackTrace();
         }
     }
@@ -111,7 +106,6 @@ public class JDBCPayerDao implements PayerDao {
                 result = true;
             }
         } catch(SQLException e) {
-            // TODO SQLException
             e.printStackTrace();
         }
         return result;
@@ -127,7 +121,6 @@ public class JDBCPayerDao implements PayerDao {
                 result = false;
             }
         } catch(SQLException e) {
-            // TODO SQLException
             e.printStackTrace();
         }
         return result;
@@ -138,8 +131,7 @@ public class JDBCPayerDao implements PayerDao {
         try {
             connection.close();
         } catch(SQLException e) {
-            // TODO SQLException
-            throw new RuntimeException(e + " - ошибка отключения БД");
+            throw new RuntimeException(e);
         }
     }
 

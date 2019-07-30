@@ -24,6 +24,7 @@ public class Constants {
 
     // Separating character for URI-string
     public static final String SEPARATOR = "/";
+    public static final String DATA_TIME_SEPARATOR = "S";
 
     // User's mistake sign during input of authorization data
     public static final String INPUT_MISTAKE_SIGN = "inputMistake";
@@ -55,6 +56,6 @@ public class Constants {
 
     public static final String EXCEPTION_NESSAGE = "Error during execute transaction";
 
-
+    public static final String UNKNOWN_COMMAND = "Unknown make report command or user's role";
 
 }

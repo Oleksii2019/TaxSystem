@@ -40,7 +40,6 @@ public class Authorization implements Filter {
 
     }
 
-
     private Boolean checkPageAccess(String carrentURI, String userRole) {
         boolean res = true;
         for(TableOfURI e : TableOfURI.values()) {

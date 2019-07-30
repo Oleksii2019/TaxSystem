@@ -31,7 +31,6 @@ public class MakeReportCommand implements Command {
         String selectedReport = request.getParameter(
                 SELECTED_REPORT_PARAMETER);
 
-
         if (UserRole.PAYER.toString().equals(person_role)
                 && (createPayerReport != null)) {
             System.out.println("Создание нового отчета");
@@ -54,7 +53,7 @@ public class MakeReportCommand implements Command {
             Service.getInstance().createReportAlternation(selectedReport,
                     reportReclamationText, login);
         } else {
-            System.out.println("Unknown make report command or user's role");
+            System.out.println(UNKNOWN_COMMAND);
         }
 
         return getURIForRequestPage(request);
