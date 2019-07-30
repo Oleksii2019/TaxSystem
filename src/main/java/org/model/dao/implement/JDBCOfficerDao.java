@@ -1,12 +1,12 @@
 package org.model.dao.implement;
 
+import org.model.dao.DaoFactory;
 import org.model.dao.OfficerDao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import static org.model.dao.implement.JDBCUtil.checkMatch;
-import static org.model.dao.implement.JDBCUtil.getLong;
 
 public class JDBCOfficerDao implements OfficerDao {
     private Connection connection;
@@ -17,20 +17,36 @@ public class JDBCOfficerDao implements OfficerDao {
 
     @Override
     public Long getOfficerIdByLogin(String officerLogin) {
-        return getLong(
-                "select id from taxofficers where login = \""
-                        + officerLogin + "\";", "id",
-                connection
-        );
+        long res = 0L;
+        try (PreparedStatement ps = connection.prepareStatement(
+                DaoFactory.getQuery("get.officer.id.by.login"))) {
+            ps.setString(1, officerLogin);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                res = rs.getLong("id");
+            }
+        } catch (SQLException e) {
+            // TODO SQLException
+            e.printStackTrace();
+        }
+        return res;
     }
 
     @Override
     public boolean matchForLoginAndPassword(String login, String password) {
-        return checkMatch("select * from taxofficers where login = "
-                        + "\"" + login + "\"" + " and password = "
-                        + "\"" + password + "\"",
-                connection
-        );
+        boolean result = false;
+        try (PreparedStatement ps = connection.prepareStatement(
+                DaoFactory.getQuery("match.for.officer.login.and.password"))) {
+            ps.setString(1, login);
+            ps.setString(2, password);
+            if (ps.executeQuery().next()) {
+                result = true;
+            }
+        } catch(SQLException e) {
+            // TODO SQLException
+            e.printStackTrace();
+        }
+        return result;
     }
 
     @Override

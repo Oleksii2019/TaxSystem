@@ -2,6 +2,7 @@ package org.model.dao;
 
 import org.model.entity.Report;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface ReportDao extends GenericDao<Report>  {
@@ -11,6 +12,6 @@ public interface ReportDao extends GenericDao<Report>  {
     void acceptReport(Long selectedReportId, Long officerID);
     void createReportAlternation(Long selectedReportId,
                                  String reportReclamation,
-                                 Long officerID);
-    void setReportAsNotAssessed(Long selectedReportId);
+                                 Long officerID) throws SQLException;
+    void setReportAsNotAssessed(Long selectedReportId) throws SQLException;
 }

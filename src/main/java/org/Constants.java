@@ -53,6 +53,7 @@ public class Constants {
 
     public static final Long DEFAULT_OFFICER_FOR_PAYER = 1L;
 
+    public static final String EXCEPTION_NESSAGE = "Error during execute transaction";
 
 
 

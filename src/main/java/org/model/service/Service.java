@@ -6,8 +6,10 @@ import org.model.dao.PayerDao;
 import org.model.dao.ReportDao;
 import org.model.entity.Report;
 
+import java.sql.SQLException;
 import java.util.List;
 
+import static org.Constants.*;
 import static org.model.service.ServiceUtil.createPayerWithForm;
 import static org.model.service.ServiceUtil.getSelectedReportId;
 
@@ -36,71 +38,51 @@ public class Service {
         return report;
     }
 
-    public void setPayerReports(String name) {
-        if (reportDao == null) {
-            reportDao = DaoFactory.getInstance().createReportDao();
-        }
-        this.report = reportDao.getNotAcceptedReportsForPayerLogin(name);
-    }
-
     public List<Report> getOfficerReports() {
         return report;
     }
 
+    public void setPayerReports(String name) {
+        initReportDao();
+        this.report = reportDao.getNotAcceptedReportsForPayerLogin(name);
+    }
+
     public void setOfficerReports(String name) {
-        if (reportDao == null) {
-            reportDao = DaoFactory.getInstance().createReportDao();
-        }
+        initReportDao();
         this.report = reportDao
                 .getNotAcceptedReportsForOfficerLogin(name);
     }
 
     public boolean IsOfficerAuthorizedUser(String login, String password) {
-        if (officerDao == null) {
-            officerDao = DaoFactory.getInstance().createOfficerDao();
-        }
+        initOfficerDao();
         return officerDao.matchForLoginAndPassword(login, password);
     }
 
     public boolean IsPayerAuthorizedUser(String login, String password) {
-        if (payerDao == null) {
-            payerDao = DaoFactory.getInstance().createPayerDao();
-        }
+        initPayerDao();
         return payerDao.matchForLoginAndPassword(login, password);
     }
 
     public boolean IsNotPayerAuthorizedUser(String login) {
-        if (payerDao == null) {
-            payerDao = DaoFactory.getInstance().createPayerDao();
-        }
+        initPayerDao();
         return payerDao.notMatchForLogin(login);
     }
 
     public void addNewPayer(String login, String name, String password) {
-        if (payerDao == null) {
-            payerDao = DaoFactory.getInstance().createPayerDao();
-        }
+        initPayerDao();
         payerDao.addNewPayer(createPayerWithForm(login, name, password));
     }
 
     public void addNewReport(String login) {
-        if (reportDao == null) {
-            reportDao = DaoFactory.getInstance().createReportDao();
-        }
-        if (payerDao == null) {
-            payerDao = DaoFactory.getInstance().createPayerDao();
-        }
+        initReportDao();
+        initPayerDao();
         reportDao.addNewReport(payerDao.getPayerIdByLogin(login),
                 payerDao.getOfficerIdByPayerID(login));
     }
 
     public void acceptReport(String selectedReport, String login) {
-        if (reportDao == null) {
-            reportDao = DaoFactory.getInstance().createReportDao();
-        }
-        if (officerDao == null) {
-            officerDao = DaoFactory.getInstance().createOfficerDao();
-        }
+        initOfficerDao();
+        initReportDao();
         reportDao.acceptReport(getSelectedReportId(report, selectedReport),
                 officerDao.getOfficerIdByLogin(login));
     }
@@ -108,36 +90,59 @@ public class Service {
     public void createReportAlternation(String selectedReport,
                                         String reportReclamation,
                                         String login) {
+        initOfficerDao();
+        initReportDao();
         Long reportID = getSelectedReportId(report, selectedReport);
-        if (reportDao == null) {
-            reportDao = DaoFactory.getInstance().createReportDao();
+        try {
+            reportDao.createReportAlternation(reportID,
+                    reportReclamation,
+                    officerDao.getOfficerIdByLogin(login));
+        } catch(SQLException e) {
+            System.out.println(EXCEPTION_NESSAGE);
+            e.printStackTrace();
         }
-        if (officerDao == null) {
-            officerDao = DaoFactory.getInstance().createOfficerDao();
-        }
-
-        // Трансакция
-        reportDao.createReportAlternation(reportID,
-                reportReclamation,
-                officerDao.getOfficerIdByLogin(login));
     }
 
     public void editReportByPayer(String selectedReport) {
+        initReportDao();
         Long reportID = getSelectedReportId(report, selectedReport);
         if (reportDao == null) {
             reportDao = DaoFactory.getInstance().createReportDao();
         }
-        // Трансакция
-        reportDao.setReportAsNotAssessed(reportID);
+        try {
+            reportDao.setReportAsNotAssessed(reportID);
+        } catch (SQLException e) {
+            System.out.println(EXCEPTION_NESSAGE);
+            e.printStackTrace();
+        }
     }
 
     public void createComplaint(String payerLogin) {
-
+        initPayerDao();
         Long officerID = payerDao.getOfficerIdByPayerID(payerLogin);
         Long  payerID = payerDao.getPayerIdByLogin(payerLogin);
         if (payerDao.isNotComplaintExist(payerID, officerID)) {
             payerDao.createComplaint(payerID, officerID);
         }
     }
+
+    private void initReportDao() {
+        if (reportDao == null) {
+            reportDao = DaoFactory.getInstance().createReportDao();
+        }
+    }
+
+    private void initPayerDao() {
+        if (payerDao == null) {
+            payerDao = DaoFactory.getInstance().createPayerDao();
+        }
+    }
+
+    private void initOfficerDao() {
+        if (officerDao == null) {
+            officerDao = DaoFactory.getInstance().createOfficerDao();
+        }
+    }
+
 
 }
