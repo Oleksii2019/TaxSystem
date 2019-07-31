@@ -4,10 +4,7 @@ import org.model.dao.DaoFactory;
 import org.model.dao.ReportDao;
 import org.model.entity.Report;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,21 +19,17 @@ public class JDBCReportDao  implements ReportDao {
     }
 
     @Override
-    public void setReportAsNotAssessed(Long selectedReportId) throws SQLException {
+    public void setReportAsNotAssessed(Long selectedReportId)
+            throws SQLException {
         connection.setAutoCommit(false);
-        try (PreparedStatement ps = connection.prepareStatement(
-                DaoFactory.getQuery("set.report.as.not.assessed"))) {
-            ps.setLong(1, selectedReportId);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            connection.rollback();
-            e.printStackTrace();
-        }
-        try (PreparedStatement ps = connection.prepareStatement(
-                DaoFactory.getQuery("set.alteration.report.as.assessed"))) {
-            ps.setString(1, LocalDateTime.now().format(ISO_LOCAL_DATE_TIME));
-            ps.setLong(2, selectedReportId);
-            ps.executeUpdate();
+        try (Statement st = connection.createStatement())  {
+            st.addBatch(String.format(DaoFactory.getQuery(
+                    "set.report.as.not.assessed"), selectedReportId));
+            st.addBatch(String.format(DaoFactory.getQuery(
+                    "set.alteration.report.as.assessed"),
+                    LocalDateTime.now().format(ISO_LOCAL_DATE_TIME),
+                    selectedReportId));
+            st.executeBatch();
         } catch (SQLException e) {
             connection.rollback();
             e.printStackTrace();
@@ -50,21 +43,15 @@ public class JDBCReportDao  implements ReportDao {
                                         String reportReclamation,
                                         Long officerID) throws SQLException {
         connection.setAutoCommit(false);
-        try (PreparedStatement ps = connection.prepareStatement(
-                    DaoFactory.getQuery("create.report.alternation"))) {
-            ps.setString(1, LocalDateTime.now().format(ISO_LOCAL_DATE_TIME));
-            ps.setString(2, reportReclamation);
-            ps.setLong(3, selectedReportId);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            connection.rollback();
-            e.printStackTrace();
-        }
-        try (PreparedStatement ps = connection.prepareStatement(
-                     DaoFactory.getQuery("set.report.as.assessed"))) {
-            ps.setLong(1, officerID);
-            ps.setLong(2, selectedReportId);
-            ps.executeUpdate();
+        try (Statement st = connection.createStatement())  {
+            st.addBatch(String.format(DaoFactory.getQuery(
+                    "create.report.alternation"),
+                    LocalDateTime.now().format(ISO_LOCAL_DATE_TIME),
+                    reportReclamation, selectedReportId));
+            st.addBatch(String.format(DaoFactory.getQuery(
+                    "set.report.as.assessed"),
+                    officerID, selectedReportId));
+            st.executeBatch();
         } catch (SQLException e) {
             connection.rollback();
             e.printStackTrace();

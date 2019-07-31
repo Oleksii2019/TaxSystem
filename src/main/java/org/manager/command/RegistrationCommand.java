@@ -27,7 +27,6 @@ public class RegistrationCommand implements Command {
 
         if (Service.getInstance().IsNotPayerAuthorizedUser(login)){
             removeInputMistakeSign(request);
-            System.out.println("К регистрации готов!");
             Service.getInstance().addNewPayer(login, regName, password);
             return TableOfURI.HOME.getPagePath();
         } else {
