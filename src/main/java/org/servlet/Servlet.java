@@ -1,6 +1,7 @@
 package org.servlet;
 
 import org.TableOfURI;
+import org.apache.log4j.Logger;
 import org.manager.command.*;
 
 import javax.servlet.ServletConfig;
@@ -17,8 +18,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static org.Constants.*;
 
-
 public class Servlet extends HttpServlet {
+    private static final Logger LOGGER =
+            Logger.getLogger(Servlet.class);
+
     private Map<String, Command> commands = new HashMap<>();
 
     @Override
@@ -58,7 +61,7 @@ public class Servlet extends HttpServlet {
             request.removeAttribute(LOGOUT_COMMAND);
             command = commands.get(LOGOUT_COMMAND);
         }
-        System.out.println(command.getClass().getName());
+        LOGGER.info(command.getClass().getName());
         response.sendRedirect(command.execute(request));
     }
 

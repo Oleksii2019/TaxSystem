@@ -56,6 +56,17 @@ public class Constants {
 
     public static final String EXCEPTION_NESSAGE = "Error during execute transaction";
 
+    // Logger messages
     public static final String UNKNOWN_COMMAND = "Unknown make report command or user's role";
+    public static final String CREATE_NEW_REPORT = "Create new report";
+    public static final String CREATE_COMPLAINT = "Create complaint";
+    public static final String EDIT_REPORT = "Edit report";
+    public static final String ACCEPT_REPORT = "Accept report";
+    public static final String CREATE_ALTERNATE_REPORT = "Create alternate report";
+    public static final String COMPLETE_REGISTRATION = "Registration has been completed: ";
+    public static final String COMPLETE_LOGOUT = "Logout has been completed";
+    public static final String COMPLETE_LOGIN = "LogIn has been completed: ";
+    public static final String ATTEMPT_ACCESS = "Current user isn't have right for access to this page";
+    public static final String CURRENT_USER = "Current user: ";
 
 }

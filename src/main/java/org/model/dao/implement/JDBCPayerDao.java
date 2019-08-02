@@ -1,5 +1,6 @@
 package org.model.dao.implement;
 
+import org.apache.log4j.Logger;
 import org.model.dao.DaoFactory;
 import org.model.dao.PayerDao;
 import org.model.entity.Payer;
@@ -13,6 +14,8 @@ import java.time.LocalDateTime;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
 public class JDBCPayerDao implements PayerDao {
+    private static final Logger LOGGER = Logger.getLogger(JDBCPayerDao.class);
+
     private Connection connection;
 
     public JDBCPayerDao(Connection connection) {
@@ -28,7 +31,7 @@ public class JDBCPayerDao implements PayerDao {
             ps.setLong(3, payerID);
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
     }
 
@@ -43,7 +46,7 @@ public class JDBCPayerDao implements PayerDao {
                 result = false;
             }
         } catch(SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
         return result;
     }
@@ -59,7 +62,7 @@ public class JDBCPayerDao implements PayerDao {
                 res = rs.getLong("taxofficer");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
         return res;
     }
@@ -75,7 +78,7 @@ public class JDBCPayerDao implements PayerDao {
                 res = rs.getLong("id");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
         return res;
     }
@@ -91,7 +94,7 @@ public class JDBCPayerDao implements PayerDao {
             ps.setLong(5, payer.getOfficerID());
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
     }
 
@@ -106,7 +109,7 @@ public class JDBCPayerDao implements PayerDao {
                 result = true;
             }
         } catch(SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
         return result;
     }
@@ -121,7 +124,7 @@ public class JDBCPayerDao implements PayerDao {
                 result = false;
             }
         } catch(SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
         return result;
     }
@@ -131,6 +134,7 @@ public class JDBCPayerDao implements PayerDao {
         try {
             connection.close();
         } catch(SQLException e) {
+            LOGGER.error(e);
             throw new RuntimeException(e);
         }
     }

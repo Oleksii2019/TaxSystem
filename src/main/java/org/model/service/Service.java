@@ -1,5 +1,6 @@
 package org.model.service;
 
+import org.apache.log4j.Logger;
 import org.model.dao.DaoFactory;
 import org.model.dao.OfficerDao;
 import org.model.dao.PayerDao;
@@ -14,6 +15,8 @@ import static org.model.service.ServiceUtil.createPayerWithForm;
 import static org.model.service.ServiceUtil.getSelectedReportId;
 
 public class Service {
+    private static final Logger LOGGER =
+            Logger.getLogger(Service.class);
     private static ReportDao reportDao;
     private static OfficerDao officerDao;
     private static PayerDao payerDao;
@@ -98,8 +101,7 @@ public class Service {
                     reportReclamation,
                     officerDao.getOfficerIdByLogin(login));
         } catch(SQLException e) {
-            System.out.println(EXCEPTION_NESSAGE);
-            e.printStackTrace();
+            LOGGER.error(EXCEPTION_NESSAGE + e);
         }
     }
 
@@ -112,8 +114,7 @@ public class Service {
         try {
             reportDao.setReportAsNotAssessed(reportID);
         } catch (SQLException e) {
-            System.out.println(EXCEPTION_NESSAGE);
-            e.printStackTrace();
+            LOGGER.error(EXCEPTION_NESSAGE + e);
         }
     }
 

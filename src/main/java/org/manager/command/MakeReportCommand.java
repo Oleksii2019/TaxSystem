@@ -1,5 +1,6 @@
 package org.manager.command;
 
+import org.apache.log4j.Logger;
 import org.model.UserRole;
 import org.model.service.Service;
 
@@ -9,6 +10,8 @@ import static org.Constants.*;
 import static org.manager.command.CommandUtility.getURIForRequestPage;
 
 public class MakeReportCommand implements Command {
+    private static final Logger LOGGER =
+            Logger.getLogger(MakeReportCommand.class);
 
     @Override
     public String execute(HttpServletRequest request) {
@@ -33,27 +36,27 @@ public class MakeReportCommand implements Command {
 
         if (UserRole.PAYER.toString().equals(person_role)
                 && (createPayerReport != null)) {
-            System.out.println("Создание нового отчета");
+            LOGGER.info(CREATE_NEW_REPORT);
             Service.getInstance().addNewReport(login);
         } else if (UserRole.PAYER.toString().equals(person_role)
                 && (createComplaint != null)) {
-            System.out.println("Создание заявки на смену инспектора");
+            LOGGER.info(CREATE_COMPLAINT);
             Service.getInstance().createComplaint(login);
         } else if (UserRole.PAYER.toString().equals(person_role)
                 && (editReportByPayer != null)) {
-            System.out.println("Внесение изменений в существующий отчет");
+            LOGGER.info(EDIT_REPORT);
             Service.getInstance().editReportByPayer(selectedReport);
         } else if (UserRole.OFFICER.toString().equals(person_role)
                 && (acceptReport != null)) {
-            System.out.println("Принятие отчета");
+            LOGGER.info(ACCEPT_REPORT);
             Service.getInstance().acceptReport(selectedReport, login);
         } else if (UserRole.OFFICER.toString().equals(person_role)
                 && (reportReclamation != null)) {
-            System.out.println("Подготовка рекламации на отчет");
+            LOGGER.info(CREATE_ALTERNATE_REPORT);
             Service.getInstance().createReportAlternation(selectedReport,
                     reportReclamationText, login);
         } else {
-            System.out.println(UNKNOWN_COMMAND);
+            LOGGER.info(UNKNOWN_COMMAND);
         }
 
         return getURIForRequestPage(request);

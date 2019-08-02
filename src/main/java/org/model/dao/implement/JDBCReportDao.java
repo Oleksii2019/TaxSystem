@@ -1,5 +1,6 @@
 package org.model.dao.implement;
 
+import org.apache.log4j.Logger;
 import org.model.dao.DaoFactory;
 import org.model.dao.ReportDao;
 import org.model.entity.Report;
@@ -12,6 +13,8 @@ import java.util.List;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
 public class JDBCReportDao  implements ReportDao {
+    private static final Logger LOGGER = Logger.getLogger(JDBCReportDao.class);
+
     private Connection connection;
 
     public JDBCReportDao(Connection connection) {
@@ -32,7 +35,7 @@ public class JDBCReportDao  implements ReportDao {
             st.executeBatch();
         } catch (SQLException e) {
             connection.rollback();
-            e.printStackTrace();
+            LOGGER.error(e);
         }
         connection.commit();
         connection.setAutoCommit(true);
@@ -54,7 +57,7 @@ public class JDBCReportDao  implements ReportDao {
             st.executeBatch();
         } catch (SQLException e) {
             connection.rollback();
-            e.printStackTrace();
+            LOGGER.error(e);
         }
         connection.commit();
         connection.setAutoCommit(true);
@@ -69,7 +72,7 @@ public class JDBCReportDao  implements ReportDao {
             ps.setLong(3, selectedReportId);
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
     }
 
@@ -82,9 +85,8 @@ public class JDBCReportDao  implements ReportDao {
             ps.setLong(3, officerID);
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
-
     }
 
     @Override
@@ -98,7 +100,7 @@ public class JDBCReportDao  implements ReportDao {
                 rl.add(loadReport(rs));
             }
         } catch(SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
         return rl;
     }
@@ -114,7 +116,7 @@ public class JDBCReportDao  implements ReportDao {
                 rl.add(loadReport(rs));
             }
         } catch(SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
         return rl;
     }
@@ -138,6 +140,7 @@ public class JDBCReportDao  implements ReportDao {
         try {
             connection.close();
         } catch(SQLException e) {
+            LOGGER.error(e);
             throw new RuntimeException(e);
         }
     }

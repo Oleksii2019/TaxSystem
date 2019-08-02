@@ -1,6 +1,7 @@
 package org.manager.command;
 
 import org.TableOfURI;
+import org.apache.log4j.Logger;
 import org.model.service.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +10,8 @@ import static org.Constants.*;
 import static org.manager.command.CommandUtility.*;
 
 public class RegistrationCommand implements Command {
+    private static final Logger LOGGER =
+            Logger.getLogger(RegistrationCommand.class);
 
     @Override
     public String execute(HttpServletRequest request) {
@@ -28,6 +31,7 @@ public class RegistrationCommand implements Command {
         if (Service.getInstance().IsNotPayerAuthorizedUser(login)){
             removeInputMistakeSign(request);
             Service.getInstance().addNewPayer(login, regName, password);
+            LOGGER.info(COMPLETE_REGISTRATION + login);
             return TableOfURI.HOME.getPagePath();
         } else {
             return getURIForRequestPage(request);

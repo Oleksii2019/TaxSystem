@@ -1,5 +1,6 @@
 package org.model.dao.implement;
 
+import org.apache.log4j.Logger;
 import org.model.dao.DaoFactory;
 import org.model.dao.OfficerDao;
 import org.model.dao.PayerDao;
@@ -10,6 +11,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class JDBCDaoFactory extends DaoFactory {
+    private static final Logger LOGGER =
+            Logger.getLogger(JDBCDaoFactory.class);
+
     private DataSource dataSource = ConnectionPoolHolder.getDataSource();
 
     @Override
@@ -31,7 +35,7 @@ public class JDBCDaoFactory extends DaoFactory {
         try {
             return dataSource.getConnection();
         } catch (SQLException e) {
-            System.out.println(e);
+            LOGGER.error(e);
             throw new RuntimeException(e);
         }
     }

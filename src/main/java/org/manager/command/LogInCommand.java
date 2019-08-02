@@ -1,6 +1,7 @@
 package org.manager.command;
 
 import org.TableOfURI;
+import org.apache.log4j.Logger;
 import org.model.UserRole;
 import org.model.service.Service;
 
@@ -10,6 +11,8 @@ import static org.Constants.*;
 import static org.manager.command.CommandUtility.*;
 
 public class LogInCommand implements Command {
+    private static final Logger LOGGER =
+            Logger.getLogger(LogInCommand.class);
 
     @Override
     public String execute(HttpServletRequest request) {
@@ -30,11 +33,13 @@ public class LogInCommand implements Command {
                 && Service.getInstance().IsOfficerAuthorizedUser(
                         login, password)){
             UserRegistrationInApp(request, login, person_role);
+            LOGGER.info(COMPLETE_LOGIN + login);
             return TableOfURI.OFFICER_REPORTS.getPagePath();
         } else if(UserRole.PAYER.toString().equals(person_role)
                 && Service.getInstance().IsPayerAuthorizedUser(
                         login, password)) {
             UserRegistrationInApp(request, login, person_role);
+            LOGGER.info(COMPLETE_LOGIN + login);
             return TableOfURI.PAYER_REPORTS.getPagePath();
         } else {
             return getURIForRequestPage(request);

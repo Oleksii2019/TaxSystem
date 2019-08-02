@@ -1,6 +1,7 @@
 package org.manager.filters;
 
 import org.TableOfURI;
+import org.apache.log4j.Logger;
 import org.model.UserRole;
 
 import javax.servlet.*;
@@ -13,6 +14,8 @@ import static org.Constants.*;
  *  For users' session authorization
  */
 public class Authorization implements Filter {
+    private static final Logger LOGGER =
+            Logger.getLogger(Authorization.class);
 
     @Override
     public void init(FilterConfig filterConfig)
@@ -26,13 +29,12 @@ public class Authorization implements Filter {
             throws IOException, ServletException {
 
         HttpServletRequest request = (HttpServletRequest) servletRequest;
-        System.out.println("Current user: "
+        LOGGER.info(CURRENT_USER
                 + request.getSession().getAttribute(USER_NAME_PARAMETER));
-
         if (!checkPageAccess(request.getRequestURI(),
                 request.getSession().getAttribute(USER_ROLE_PARAMETER)
                 .toString())) {
-            System.out.println("Current user isn't have right for access to this page");
+            LOGGER.info(ATTEMPT_ACCESS);
             request.setAttribute(LOGOUT_COMMAND, EMPTY_STRING);
         }
 

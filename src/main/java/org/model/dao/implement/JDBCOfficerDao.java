@@ -1,5 +1,6 @@
 package org.model.dao.implement;
 
+import org.apache.log4j.Logger;
 import org.model.dao.DaoFactory;
 import org.model.dao.OfficerDao;
 
@@ -9,6 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class JDBCOfficerDao implements OfficerDao {
+    private static final Logger LOGGER =
+            Logger.getLogger(JDBCOfficerDao.class);
     private Connection connection;
 
     public JDBCOfficerDao(Connection connection) {
@@ -26,7 +29,7 @@ public class JDBCOfficerDao implements OfficerDao {
                 res = rs.getLong("id");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
         return res;
     }
@@ -42,7 +45,7 @@ public class JDBCOfficerDao implements OfficerDao {
                 result = true;
             }
         } catch(SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
         return result;
     }
@@ -52,6 +55,7 @@ public class JDBCOfficerDao implements OfficerDao {
         try {
             connection.close();
         } catch(SQLException e) {
+            LOGGER.error(e);
             throw new RuntimeException(e);
         }
     }
