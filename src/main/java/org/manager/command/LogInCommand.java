@@ -8,49 +8,62 @@ import org.model.service.Service;
 import javax.servlet.http.HttpServletRequest;
 
 import static org.Constants.*;
-import static org.manager.command.CommandUtility.*;
 
 public class LogInCommand implements Command {
     private static final Logger LOGGER =
             Logger.getLogger(LogInCommand.class);
+    private CommandUtility commandUtility;
+    private Service service;
+
+    public LogInCommand() {
+        this(CommandUtility.getInstance(),
+             Service.getInstance());
+    }
+    private LogInCommand(CommandUtility commandUtility,
+                        Service service) {
+        this.commandUtility = commandUtility;
+        this.service = service;
+    }
 
     @Override
     public String execute(HttpServletRequest request) {
         String login = request.getParameter(LOGIN_PARAMETER);
         String password = request.getParameter(PASSWORD_PARAMETER);
         String person_role = request.getParameter(USER_ROLE_PARAMETER);
-        setInputMistakeSign(request);
+        commandUtility.setInputMistakeSign(request);
+//        CommandUtility.getInstance().setInputMistakeSign(request);
 
         if ((login == null) || login.isEmpty()
                 || (password == null) || password.isEmpty()
                 || !request.getSession().getAttribute(USER_NAME_PARAMETER)
                    .equals(GUEST_USER_NAME)
-                || CommandUtility.IsUserLogged(request, login)) {
-            return getURIForRequestPage(request);
+                ||  commandUtility
+                   .isUserLogged(request, login)) {
+            return  commandUtility.getURIForRequestPage(request);
         }
 
         if (UserRole.OFFICER.toString().equals(person_role)
-                && Service.getInstance().IsOfficerAuthorizedUser(
+                && service.isOfficerAuthorizedUser(
                         login, password)){
-            UserRegistrationInApp(request, login, person_role);
+            userRegistrationInApp(request, login, person_role);
             LOGGER.info(COMPLETE_LOGIN + login);
             return TableOfURI.OFFICER_REPORTS.getPagePath();
         } else if(UserRole.PAYER.toString().equals(person_role)
-                && Service.getInstance().IsPayerAuthorizedUser(
+                && service.isPayerAuthorizedUser(
                         login, password)) {
-            UserRegistrationInApp(request, login, person_role);
+            userRegistrationInApp(request, login, person_role);
             LOGGER.info(COMPLETE_LOGIN + login);
             return TableOfURI.PAYER_REPORTS.getPagePath();
         } else {
-            return getURIForRequestPage(request);
+            return  commandUtility.getURIForRequestPage(request);
         }
     }
 
-    private void UserRegistrationInApp(HttpServletRequest request,
+    private void userRegistrationInApp(HttpServletRequest request,
                                        String login,
                                        String userRole) {
-        CommandUtility.addToLoggedUsers(request, login);
-        CommandUtility.setUserAndRole(request, userRole, login);
-        removeInputMistakeSign(request);
+        commandUtility.addToLoggedUsers(request, login);
+        commandUtility.setUserAndRole(request, userRole, login);
+        commandUtility.removeInputMistakeSign(request);
     }
 }

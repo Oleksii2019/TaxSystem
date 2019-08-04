@@ -7,11 +7,23 @@ import org.model.service.Service;
 import javax.servlet.http.HttpServletRequest;
 
 import static org.Constants.*;
-import static org.manager.command.CommandUtility.getURIForRequestPage;
 
 public class MakeReportCommand implements Command {
     private static final Logger LOGGER =
             Logger.getLogger(MakeReportCommand.class);
+    private CommandUtility commandUtility;
+    private Service service;
+
+    public MakeReportCommand() {
+        this(CommandUtility.getInstance(),
+                Service.getInstance());
+    }
+    private MakeReportCommand(CommandUtility commandUtility,
+                         Service service) {
+        this.commandUtility = commandUtility;
+        this.service = service;
+    }
+
 
     @Override
     public String execute(HttpServletRequest request) {
@@ -37,28 +49,28 @@ public class MakeReportCommand implements Command {
         if (UserRole.PAYER.toString().equals(person_role)
                 && (createPayerReport != null)) {
             LOGGER.info(CREATE_NEW_REPORT);
-            Service.getInstance().addNewReport(login);
+            service.addNewReport(login);
         } else if (UserRole.PAYER.toString().equals(person_role)
                 && (createComplaint != null)) {
             LOGGER.info(CREATE_COMPLAINT);
-            Service.getInstance().createComplaint(login);
+            service.createComplaint(login);
         } else if (UserRole.PAYER.toString().equals(person_role)
                 && (editReportByPayer != null)) {
             LOGGER.info(EDIT_REPORT);
-            Service.getInstance().editReportByPayer(selectedReport);
+            service.editReportByPayer(selectedReport);
         } else if (UserRole.OFFICER.toString().equals(person_role)
                 && (acceptReport != null)) {
             LOGGER.info(ACCEPT_REPORT);
-            Service.getInstance().acceptReport(selectedReport, login);
+            service.acceptReport(selectedReport, login);
         } else if (UserRole.OFFICER.toString().equals(person_role)
                 && (reportReclamation != null)) {
             LOGGER.info(CREATE_ALTERNATE_REPORT);
-            Service.getInstance().createReportAlternation(selectedReport,
+            service.createReportAlternation(selectedReport,
                     reportReclamationText, login);
         } else {
             LOGGER.info(UNKNOWN_COMMAND);
         }
 
-        return getURIForRequestPage(request);
+        return commandUtility.getURIForRequestPage(request);
     }
 }

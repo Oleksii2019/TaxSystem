@@ -56,17 +56,17 @@ public class Service {
                 .getNotAcceptedReportsForOfficerLogin(name);
     }
 
-    public boolean IsOfficerAuthorizedUser(String login, String password) {
+    public boolean isOfficerAuthorizedUser(String login, String password) {
         initOfficerDao();
         return officerDao.matchForLoginAndPassword(login, password);
     }
 
-    public boolean IsPayerAuthorizedUser(String login, String password) {
+    public boolean isPayerAuthorizedUser(String login, String password) {
         initPayerDao();
         return payerDao.matchForLoginAndPassword(login, password);
     }
 
-    public boolean IsNotPayerAuthorizedUser(String login) {
+    public boolean isNotPayerAuthorizedUser(String login) {
         initPayerDao();
         return payerDao.notMatchForLogin(login);
     }

@@ -28,8 +28,10 @@ public class Servlet extends HttpServlet {
     public void init(ServletConfig servletConfig) throws ServletException {
         super.init(servletConfig);
 
-        Set<String> hSet = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
-        servletConfig.getServletContext().setAttribute(LOGGED_USERS_PARAMETER, hSet);
+        Set<String> hSet = Collections.newSetFromMap(
+                new ConcurrentHashMap<String, Boolean>());
+        servletConfig.getServletContext().setAttribute(
+                LOGGED_USERS_PARAMETER, hSet);
         commands.put(LOGIN_COMMAND, new LogInCommand());
         commands.put(LOGOUT_COMMAND, new LogOutCommand());
         commands.put(REGISTRATION_COMMAND, new RegistrationCommand());
@@ -44,12 +46,14 @@ public class Servlet extends HttpServlet {
     }
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
+    public void doPost(HttpServletRequest request,
+                       HttpServletResponse response)
             throws IOException, ServletException {
         processRequest(request, response);
     }
 
-    private void processRequest(HttpServletRequest request, HttpServletResponse response)
+    private void processRequest(HttpServletRequest request,
+                                HttpServletResponse response)
             throws ServletException, IOException {
         Command command;
         String path = request.getRequestURI();
