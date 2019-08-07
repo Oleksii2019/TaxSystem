@@ -9,6 +9,16 @@ import javax.servlet.http.HttpServletRequest;
 
 import static org.Constants.*;
 
+/**
+ *  Implementation for servlet command "Log In".
+ *  Takes login and password from request context, validates them,
+ *  checks matching in data base fields and servlet context (user
+ *  mustn't be already registered). In mistake case sets mistake sign
+ *  in context and returns original page URI for redirect. In success
+ *  case registers user in the application and returns next page URI.
+ *  * @version v.1.0 19 Jun 2019
+ *  * @author Oleksii Muratov
+ */
 public class LogInCommand implements Command {
     private static final Logger LOGGER =
             Logger.getLogger(LogInCommand.class);
@@ -31,7 +41,6 @@ public class LogInCommand implements Command {
         String password = request.getParameter(PASSWORD_PARAMETER);
         String person_role = request.getParameter(USER_ROLE_PARAMETER);
         commandUtility.setInputMistakeSign(request);
-//        CommandUtility.getInstance().setInputMistakeSign(request);
 
         if ((login == null) || login.isEmpty()
                 || (password == null) || password.isEmpty()
@@ -59,6 +68,12 @@ public class LogInCommand implements Command {
         }
     }
 
+    /**
+     * Provides logged user registration in the application.
+     * @param request the request object,
+     * @param login thr login name,
+     * @param userRole the user's role
+     */
     private void userRegistrationInApp(HttpServletRequest request,
                                        String login,
                                        String userRole) {

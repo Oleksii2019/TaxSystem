@@ -26,7 +26,8 @@ public class JDBCPayerDao implements PayerDao {
     public void createComplaint(Long payerID, Long officerID) {
         try (PreparedStatement ps = connection.prepareStatement(
                 DaoFactory.getQuery("create.complaint"))) {
-            ps.setString(1, LocalDateTime.now().format(ISO_LOCAL_DATE_TIME));
+            ps.setString(1, LocalDateTime.now()
+                    .format(ISO_LOCAL_DATE_TIME));
             ps.setLong(2, officerID);
             ps.setLong(3, payerID);
             ps.executeUpdate();
