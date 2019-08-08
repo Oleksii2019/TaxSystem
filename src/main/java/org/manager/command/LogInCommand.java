@@ -35,6 +35,11 @@ public class LogInCommand implements Command {
         this.service = service;
     }
 
+    /**
+     * Basic class method.
+     * @param request the request
+     * @return page URL for redirect
+     */
     @Override
     public String execute(HttpServletRequest request) {
         String login = request.getParameter(LOGIN_PARAMETER);
@@ -64,7 +69,7 @@ public class LogInCommand implements Command {
             LOGGER.info(COMPLETE_LOGIN + login);
             return TableOfURI.PAYER_REPORTS.getPagePath();
         } else {
-            return  commandUtility.getURIForRequestPage(request);
+            return commandUtility.getURIForRequestPage(request);
         }
     }
 

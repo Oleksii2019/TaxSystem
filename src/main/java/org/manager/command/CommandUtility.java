@@ -46,6 +46,7 @@ public class CommandUtility {
      * Provides checking of case when user is already registered
      * @param request the request object,
      * @param userName the user's name
+     * @return true for logged user exist case
      */
     public boolean isUserLogged(HttpServletRequest request, String userName) {
         Set<String> loggedUsers = (Set<String>) request.getSession()
