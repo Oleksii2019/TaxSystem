@@ -35,7 +35,7 @@ public class Authorization implements Filter {
                 request.getSession().getAttribute(USER_ROLE_PARAMETER)
                 .toString())) {
             LOGGER.info(ATTEMPT_ACCESS);
-            request.setAttribute(LOGOUT_COMMAND, EMPTY_STRING);
+            request.getSession().setAttribute(LOGOUT_COMMAND, EMPTY_STRING);
         }
 
         filterChain.doFilter(servletRequest,servletResponse);

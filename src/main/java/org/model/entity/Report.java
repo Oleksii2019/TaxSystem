@@ -11,7 +11,6 @@ public class Report {
     private String payerName;
     private String note;
 
-
     public Long getId() {
         return id;
     }
@@ -83,7 +82,6 @@ public class Report {
     public void setNote(String note) {
         this.note = note;
     }
-
 
     private Report() {
     }

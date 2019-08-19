@@ -57,12 +57,12 @@ public class Servlet extends HttpServlet {
             throws ServletException, IOException {
         Command command;
         String path = request.getRequestURI();
-        if (request.getAttribute(LOGOUT_COMMAND) == null) {
+        if (request.getSession().getAttribute(LOGOUT_COMMAND) == null) {
             command = commands.getOrDefault(
                     path.substring(path.lastIndexOf(SEPARATOR) + 1),
                     (r)->TableOfURI.HOME.getPagePath());
         } else {
-            request.removeAttribute(LOGOUT_COMMAND);
+            request.getSession().removeAttribute(LOGOUT_COMMAND);
             command = commands.get(LOGOUT_COMMAND);
         }
         LOGGER.info(command.getClass().getName());
